@@ -21,18 +21,15 @@ class MainFragment : Fragment() {
 		inflater.inflate(R.menu.main_menu, menu)
 	}
 
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return when (item.itemId) {
-			R.id.open_settings_menu_item -> {
-				findNavController().navigate(MainFragmentDirections.actionMainFragmentToSettingsFragment())
-				true
-			}
-			else -> super.onOptionsItemSelected(item)
+	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+		R.id.open_settings_menu_item -> {
+			findNavController().navigate(MainFragmentDirections.actionMainFragmentToSettingsFragment())
+			true
 		}
+		else -> super.onOptionsItemSelected(item)
 	}
 
-	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-							  savedInstanceState: Bundle?): View {
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 		_binding = MainFragmentBinding.inflate(inflater, container, false)
 		return binding.root
 	}
