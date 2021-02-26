@@ -1,0 +1,8 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<Preference
+		app:key="reset"
+		app:title="@string/reset_data"
+		app:summary="@string/reset_data_summary" />
+</PreferenceScreen>

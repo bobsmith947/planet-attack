@@ -1,0 +1,7 @@
+<resources>
+	<string name="app_name">Planet Attack</string>
+	<string name="open_settings">Open Settings</string>
+	<string name="exit_app">Exit App</string>
+	<string name="reset_data">Reset Data</string>
+	<string name="reset_data_summary">Clear scores and erase database.</string>
+</resources>
