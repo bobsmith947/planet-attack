@@ -14,8 +14,10 @@ class MainActivity : AppCompatActivity() {
 		super.onCreate(savedInstanceState)
 		binding = MainActivityBinding.inflate(layoutInflater)
 		setContentView(binding.root)
-		NavigationUI.setupActionBarWithNavController(this, (supportFragmentManager.findFragmentById(binding.navHostFragment.id) as NavHostFragment).navController)
+		NavigationUI.setupActionBarWithNavController(this, (supportFragmentManager
+			.findFragmentById(binding.navHostFragment.id) as NavHostFragment).navController)
 	}
 
-	override fun onSupportNavigateUp() = findNavController(binding.navHostFragment.id).navigateUp() || super.onSupportNavigateUp()
+	override fun onSupportNavigateUp() = findNavController(binding.navHostFragment.id).navigateUp()
+						|| super.onSupportNavigateUp()
 }
