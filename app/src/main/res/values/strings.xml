@@ -4,4 +4,7 @@
 	<string name="exit_app">Exit App</string>
 	<string name="reset_data">Reset Data</string>
 	<string name="reset_data_summary">Clear scores and erase database.</string>
+	<string name="play_label">Play Game</string>
+	<string name="scores_label">High Scores</string>
+	<string name="help_label">How to Play</string>
 </resources>
