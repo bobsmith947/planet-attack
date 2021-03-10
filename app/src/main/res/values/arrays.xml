@@ -1,0 +1,12 @@
+<resources>
+	<string-array name="speed_choices">
+		<item>Slow</item>
+		<item>Medium</item>
+		<item>Fast</item>
+	</string-array>
+	<string-array name="speed_values">
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+	</string-array>
+</resources>

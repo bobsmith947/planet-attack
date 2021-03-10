@@ -1,6 +1,23 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto">
 
+	<ListPreference
+		app:key="speed"
+		app:title="@string/game_speed"
+		app:entries="@array/speed_choices"
+		app:entryValues="@array/speed_values"
+		app:defaultValue="1" />
+
+	<SwitchPreference
+		app:key="next"
+		app:title="@string/next_piece"
+		app:defaultValue="true" />
+
+	<SwitchPreference
+		app:key="hold"
+		app:title="@string/hold_piece"
+		app:defaultValue="false" />
+
 	<Preference
 		app:key="reset"
 		app:title="@string/reset_data"
