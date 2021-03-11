@@ -26,6 +26,10 @@ class MainFragment : Fragment() {
 			findNavController().navigate(MainFragmentDirections.actionMainFragmentToSettingsFragment())
 			true
 		}
+		R.id.exit_app_menu_item -> {
+			requireActivity().finishAndRemoveTask()
+			exitProcess(0)
+		}
 		else -> super.onOptionsItemSelected(item)
 	}
 
