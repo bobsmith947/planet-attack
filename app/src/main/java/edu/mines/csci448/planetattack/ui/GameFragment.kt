@@ -5,7 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import edu.mines.csci448.planetattack.R
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 
@@ -25,22 +26,30 @@ class GameFragment : Fragment() {
 		savedInstanceState: Bundle?
 	): View? {
 		_binding = FragmentGameBinding.inflate(inflater, container, false)
-
 		setButtonOnClickListeners()
-
 		resume()
 
+		(requireActivity() as AppCompatActivity).supportActionBar?.hide()
+
 		return binding.root
+	}
+
+	override fun onDestroyView() {
+		super.onDestroyView()
+		_binding = null
+		(requireActivity() as AppCompatActivity).supportActionBar?.show()
 	}
 
 	private fun pause() {
 		binding.menuOverlay.visibility = View.VISIBLE
 		binding.resumeButton.visibility = View.VISIBLE
+		binding.quitButton.visibility = View.VISIBLE
 	}
 
 	private fun resume() {
 		binding.menuOverlay.visibility = View.INVISIBLE
 		binding.resumeButton.visibility = View.INVISIBLE
+		binding.quitButton.visibility = View.INVISIBLE
 	}
 
 	private fun setButtonOnClickListeners() {
@@ -50,6 +59,10 @@ class GameFragment : Fragment() {
 
 		binding.menuButton.setOnClickListener {
 			pause()
+		}
+
+		binding.quitButton.setOnClickListener {
+			findNavController().navigateUp()
 		}
 	}
 }
