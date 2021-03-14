@@ -1,5 +1,6 @@
 package edu.mines.csci448.planetattack.ui
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -50,6 +51,14 @@ class MainFragment : Fragment() {
 	private fun setButtonOnClickListeners() {
 		binding.playButton.setOnClickListener {
 			findNavController().navigate(MainFragmentDirections.actionMainFragmentToGameFragment())
+		}
+
+		binding.helpButton.setOnClickListener {
+			AlertDialog.Builder(context)
+				.setTitle(R.string.help_title)
+				.setMessage(R.string.help_text)
+				.setNeutralButton(R.string.help_okay, null)
+				.show()
 		}
 	}
 }
