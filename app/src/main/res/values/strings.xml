@@ -1,13 +1,26 @@
 <resources>
-	<string name="app_name">Planet Attack</string>
-	<string name="open_settings">Open Settings</string>
-	<string name="exit_app">Exit App</string>
-	<string name="game_speed">Game Speed</string>
-	<string name="next_piece">Show Next Piece</string>
-	<string name="hold_piece">Show Hold Piece</string>
-	<string name="reset_data">Reset Data</string>
-	<string name="reset_data_summary">Clear scores and erase database.</string>
-	<string name="play_label">Play Game</string>
-	<string name="scores_label">High Scores</string>
-	<string name="help_label">How to Play</string>
+    <string name="app_name">Planet Attack</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="exit_app">Exit App</string>
+    <string name="game_speed">Game Speed</string>
+    <string name="next_piece">Show Next Piece</string>
+    <string name="hold_piece">Show Hold Piece</string>
+    <string name="reset_data">Reset Data</string>
+    <string name="reset_data_summary">Clear scores and erase database.</string>
+    <string name="play_label">Play Game</string>
+    <string name="scores_label">High Scores</string>
+    <string name="help_label">How to Play</string>
+    <string name="speed_slow">Slow</string>
+    <string name="speed_medium">Medium</string>
+    <string name="speed_fast">Fast</string>
+    <string name="in_game_menu">Menu</string>
+    <string name="next_block">Next: </string>
+    <string name="hold_block">Hold: </string>
+    <string name="game_score">Score: </string>
+    <string name="game_high_score">High Score: </string>
+    <string name="new_record">New Record!</string>
+    <string name="main_menu">Main Menu</string>
+    <string name="resume">Resume</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
