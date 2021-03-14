@@ -36,11 +36,20 @@ class MainFragment : Fragment() {
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 		_binding = MainFragmentBinding.inflate(inflater, container, false)
+
+		setButtonOnClickListeners()
+
 		return binding.root
 	}
 
 	override fun onDestroyView() {
 		super.onDestroyView()
 		_binding = null
+	}
+
+	private fun setButtonOnClickListeners() {
+		binding.playButton.setOnClickListener {
+			findNavController().navigate(MainFragmentDirections.actionMainFragmentToGameFragment())
+		}
 	}
 }

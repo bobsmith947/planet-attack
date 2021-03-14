@@ -19,12 +19,13 @@
             android:id="@+id/menu_button"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/in_game_menu"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHeight_max="80dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,7 +33,7 @@
             android:id="@+id/next_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:text="@string/next_block"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintBaseline_toBaselineOf="@+id/menu_button"
@@ -49,6 +50,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="w,1:2"
             app:layout_constraintEnd_toStartOf="@+id/second_next_image_view"
+            app:layout_constraintHeight_max="100dp"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -62,6 +64,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="w,1:2"
             app:layout_constraintEnd_toStartOf="@+id/third_next_image_view"
+            app:layout_constraintHeight_max="100dp"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -69,12 +72,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:src="@drawable/block_icon_z"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="w,1:2"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHeight_max="100dp"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -84,7 +88,7 @@
         android:layout_height="0dp"
         android:background="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="H,4:5"
+        app:layout_constraintDimensionRatio="H,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -103,8 +107,8 @@
             android:id="@+id/high_score_text_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/game_high_score"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -114,7 +118,7 @@
             android:id="@+id/hold_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:text="@string/hold_block"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -125,8 +129,8 @@
             android:id="@+id/score_text_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="@string/game_score"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintStart_toEndOf="@+id/hold_image_view"
@@ -142,6 +146,7 @@
             android:src="@drawable/block_icon_j"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="1:2"
+            app:layout_constraintHeight_max="100dp"
             app:layout_constraintStart_toEndOf="@+id/hold_label"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -149,6 +154,7 @@
             android:id="@+id/score_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:fontFamily="monospace"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintBaseline_toBaselineOf="@+id/score_text_label"
@@ -159,7 +165,7 @@
             android:id="@+id/high_score_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:fontFamily="monospace"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             app:layout_constraintBaseline_toBaselineOf="@+id/high_score_text_label"
@@ -187,16 +193,6 @@
             android:text="@string/resume"
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="24dp" />
-
-        <Button
-            android:id="@+id/main_menu_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/main_menu"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
