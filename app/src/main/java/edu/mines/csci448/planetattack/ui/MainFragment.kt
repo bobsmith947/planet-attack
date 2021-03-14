@@ -60,5 +60,9 @@ class MainFragment : Fragment() {
 				.setNeutralButton(R.string.help_okay, null)
 				.show()
 		}
+
+		binding.scoresButton.setOnClickListener {
+			findNavController().navigate(MainFragmentDirections.actionMainFragmentToScoreFragment())
+		}
 	}
 }

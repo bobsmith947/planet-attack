@@ -17,6 +17,9 @@
 		<action
 			android:id="@+id/action_mainFragment_to_gameFragment"
 			app:destination="@id/gameFragment" />
+		<action
+			android:id="@+id/action_mainFragment_to_scoreFragment"
+			app:destination="@id/scoreFragment" />
 	</fragment>
 
 	<fragment
@@ -28,4 +31,9 @@
 		android:name="edu.mines.csci448.planetattack.ui.GameFragment"
 		android:label="fragment_game"
 		tools:layout="@layout/fragment_game" />
+	<fragment
+		android:id="@+id/scoreFragment"
+		android:name="edu.mines.csci448.planetattack.ui.ScoreFragment"
+		android:label="fragment_score_list"
+		tools:layout="@layout/fragment_score_list" />
 </navigation>
