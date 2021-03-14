@@ -1,7 +1,5 @@
 <resources>
 	<string name="app_name">Planet Attack</string>
-	<string name="open_settings">Open Settings</string>
-	<string name="exit_app">Exit App</string>
 	<string name="game_speed">Game Speed</string>
 	<string name="next_piece">Show Next Piece</string>
 	<string name="hold_piece">Show Hold Piece</string>
@@ -10,6 +8,7 @@
 	<string name="play_label">Play Game</string>
 	<string name="scores_label">High Scores</string>
 	<string name="help_label">How to Play</string>
+	<string name="settings_label">Open Settings</string>
 	<string name="speed_slow">Slow</string>
 	<string name="speed_medium">Medium</string>
 	<string name="speed_fast">Fast</string>

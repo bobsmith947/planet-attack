@@ -6,7 +6,8 @@
 		app:title="@string/game_speed"
 		app:entries="@array/speed_choices"
 		app:entryValues="@array/speed_values"
-		app:defaultValue="1" />
+		app:defaultValue="1"
+		app:useSimpleSummaryProvider="true" />
 
 	<SwitchPreference
 		app:key="next"
