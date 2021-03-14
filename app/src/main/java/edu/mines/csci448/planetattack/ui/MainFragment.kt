@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import edu.mines.csci448.planetattack.R
 import edu.mines.csci448.planetattack.databinding.MainFragmentBinding
+import kotlin.system.exitProcess
 
 class MainFragment : Fragment() {
 	private var _binding: MainFragmentBinding? = null
