@@ -15,41 +15,41 @@ import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
  * create an instance of this fragment.
  */
 class GameFragment : Fragment() {
-    private var _binding: FragmentGameBinding? = null
-    val binding get() = _binding!!
+	private var _binding: FragmentGameBinding? = null
+	val binding get() = _binding!!
 
-    private var isPaused = false
+	private var isPaused = false
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = FragmentGameBinding.inflate(inflater, container, false)
+	override fun onCreateView(
+		inflater: LayoutInflater, container: ViewGroup?,
+		savedInstanceState: Bundle?
+	): View? {
+		_binding = FragmentGameBinding.inflate(inflater, container, false)
 
-        setButtonOnClickListeners()
+		setButtonOnClickListeners()
 
-        resume()
+		resume()
 
-        return binding.root
-    }
+		return binding.root
+	}
 
-    private fun pause() {
-        binding.menuOverlay.visibility = View.VISIBLE
-        binding.resumeButton.visibility = View.VISIBLE
-    }
+	private fun pause() {
+		binding.menuOverlay.visibility = View.VISIBLE
+		binding.resumeButton.visibility = View.VISIBLE
+	}
 
-    private fun resume() {
-        binding.menuOverlay.visibility = View.INVISIBLE
-        binding.resumeButton.visibility = View.INVISIBLE
-    }
+	private fun resume() {
+		binding.menuOverlay.visibility = View.INVISIBLE
+		binding.resumeButton.visibility = View.INVISIBLE
+	}
 
-    private fun setButtonOnClickListeners() {
-        binding.resumeButton.setOnClickListener {
-            resume()
-        }
+	private fun setButtonOnClickListeners() {
+		binding.resumeButton.setOnClickListener {
+			resume()
+		}
 
-        binding.menuButton.setOnClickListener {
-            pause()
-        }
-    }
+		binding.menuButton.setOnClickListener {
+			pause()
+		}
+	}
 }
