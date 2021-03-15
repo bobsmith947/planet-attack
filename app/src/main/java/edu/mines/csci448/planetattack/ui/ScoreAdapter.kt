@@ -2,10 +2,8 @@ package edu.mines.csci448.planetattack.ui
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import edu.mines.csci448.planetattack.R
+import edu.mines.csci448.planetattack.databinding.FragmentScoreBinding
 
 import edu.mines.csci448.planetattack.ui.dummy.DummyContent.DummyItem
 
@@ -13,30 +11,24 @@ import edu.mines.csci448.planetattack.ui.dummy.DummyContent.DummyItem
  * [RecyclerView.Adapter] that can display a [DummyItem].
  * TODO: Replace the implementation with code for your data type.
  */
-class ScoreAdapter(
-		private val values: List<DummyItem>)
-	: RecyclerView.Adapter<ScoreAdapter.ViewHolder>() {
+class ScoreAdapter(private val values: List<DummyItem>) : RecyclerView.Adapter<ScoreAdapter.ViewHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-		val view = LayoutInflater.from(parent.context)
-				.inflate(R.layout.fragment_score, parent, false)
-		return ViewHolder(view)
+		val binding = FragmentScoreBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+		return ViewHolder(binding)
 	}
 
-	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-		val item = values[position]
-		holder.idView.text = item.id
-		holder.contentView.text = item.content
-	}
+	override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(values[position])
 
 	override fun getItemCount(): Int = values.size
 
-	inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-		val idView: TextView = view.findViewById(R.id.item_number)
-		val contentView: TextView = view.findViewById(R.id.content)
+	inner class ViewHolder(val binding: FragmentScoreBinding) : RecyclerView.ViewHolder(binding.root) {
 
-		override fun toString(): String {
-			return super.toString() + " '" + contentView.text + "'"
+		fun bind(item: DummyItem) {
+			binding.placeTextView.text = item.id
+			binding.scoreTextView.text = item.content
 		}
+
+		override fun toString() = "${super.toString()} '${binding.scoreTextView.text}'"
 	}
 }
