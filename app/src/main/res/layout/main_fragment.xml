@@ -1,47 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:orientation="vertical"
-	android:gravity="bottom"
-    android:padding="16sp"
-	tools:context=".ui.MainFragment">
+	android:background="@color/black">
 
-	<Button
-		android:id="@+id/play_button"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/play_label"
-		android:backgroundTint="@color/block_green"
-		android:textStyle="bold"
-		android:textColor="@color/black"/>
+	<ImageView
+		android:id="@+id/imageView"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:src="@drawable/title_image_background"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent" />
 
-	<Button
-		android:id="@+id/scores_button"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/scores_label"
-		android:backgroundTint="@color/block_yellow"
-		android:textStyle="bold"
-		android:textColor="@color/black"/>
+	<LinearLayout
+		android:id="@+id/linearLayout"
+		android:layout_width="0dp"
+		android:layout_height="0dp"
+		android:gravity="bottom"
+		android:orientation="vertical"
+		android:padding="16sp"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintTop_toTopOf="parent"
+		tools:context=".ui.MainFragment">
 
-	<Button
-		android:id="@+id/help_button"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/help_label"
-		android:backgroundTint="@color/block_orange"
-		android:textStyle="bold"
-		android:textColor="@color/black"/>
+		<Button
+			android:id="@+id/play_button"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:backgroundTint="@color/block_green"
+			android:text="@string/play_label"
+			android:textColor="@color/black"
+			android:textStyle="bold" />
 
-	<Button
-		android:id="@+id/settings_button"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/settings_label"
-		android:backgroundTint="@color/block_red"
-		android:textStyle="bold"
-		android:textColor="@color/black"/>
-</LinearLayout>
+		<Button
+			android:id="@+id/scores_button"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:backgroundTint="@color/block_yellow"
+			android:text="@string/scores_label"
+			android:textColor="@color/black"
+			android:textStyle="bold" />
+
+		<Button
+			android:id="@+id/help_button"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:backgroundTint="@color/block_orange"
+			android:text="@string/help_label"
+			android:textColor="@color/black"
+			android:textStyle="bold" />
+
+		<Button
+			android:id="@+id/settings_button"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:backgroundTint="@color/block_red"
+			android:text="@string/settings_label"
+			android:textColor="@color/black"
+			android:textStyle="bold" />
+
+	</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
