@@ -5,41 +5,43 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
+	android:gravity="bottom"
     android:padding="16sp"
-
 	tools:context=".ui.MainFragment">
-
-	<TextView
-		android:layout_width="match_parent"
-		android:layout_height="200dp"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:padding="16sp"
-        android:autoSizeTextType="uniform"
-        android:lines="1"
-		android:text="@string/app_name" />
 
 	<Button
 		android:id="@+id/play_button"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/play_label" />
+		android:text="@string/play_label"
+		android:backgroundTint="@color/block_green"
+		android:textStyle="bold"
+		android:textColor="@color/black"/>
 
 	<Button
 		android:id="@+id/scores_button"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/scores_label" />
+		android:text="@string/scores_label"
+		android:backgroundTint="@color/block_yellow"
+		android:textStyle="bold"
+		android:textColor="@color/black"/>
 
 	<Button
 		android:id="@+id/help_button"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/help_label" />
+		android:text="@string/help_label"
+		android:backgroundTint="@color/block_orange"
+		android:textStyle="bold"
+		android:textColor="@color/black"/>
 
 	<Button
 		android:id="@+id/settings_button"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/settings_label" />
+		android:text="@string/settings_label"
+		android:backgroundTint="@color/block_red"
+		android:textStyle="bold"
+		android:textColor="@color/black"/>
 </LinearLayout>
