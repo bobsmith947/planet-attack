@@ -2,7 +2,6 @@ package edu.mines.csci448.planetattack.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.WindowInsetsController
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -29,7 +28,6 @@ class MainActivity : AppCompatActivity() {
 	override fun onWindowFocusChanged(hasFocus: Boolean) {
 		super.onWindowFocusChanged(hasFocus)
 		if (hasFocus) {
-			//supportActionBar?.hide()
 			WindowCompat.setDecorFitsSystemWindows(window, false)
 			WindowInsetsControllerCompat(window, binding.root).let { controller ->
 				controller.hide(WindowInsetsCompat.Type.systemBars())
