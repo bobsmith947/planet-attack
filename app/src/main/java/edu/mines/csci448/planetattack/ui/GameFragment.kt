@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
+import edu.mines.csci448.planetattack.BackPressListener
 import edu.mines.csci448.planetattack.R
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 
@@ -15,7 +16,7 @@ import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
  * Use the [GameFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class GameFragment : Fragment() {
+class GameFragment : Fragment(), BackPressListener {
 	private var _binding: FragmentGameBinding? = null
 	val binding get() = _binding!!
 
@@ -38,6 +39,10 @@ class GameFragment : Fragment() {
 		super.onDestroyView()
 		_binding = null
 		(requireActivity() as AppCompatActivity).supportActionBar?.show()
+	}
+
+	override fun onBackPressed() {
+		pause()
 	}
 
 	private fun pause() {
