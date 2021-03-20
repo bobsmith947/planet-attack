@@ -3,7 +3,7 @@ package edu.mines.csci448.planetattack.view
 import androidx.annotation.DrawableRes
 import edu.mines.csci448.planetattack.R
 
-enum class BlockShape(@DrawableRes val iconId: Int) {
+enum class PieceShape(@DrawableRes val iconId: Int) {
 	I(R.drawable.block_icon_i),
 	J(R.drawable.block_icon_j),
 	L(R.drawable.block_icon_l),

@@ -4,10 +4,10 @@ import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 
-class BlockDrawable(val color: BlockColor, val shape: BlockShape, resources: Resources) :
+class BlockDrawable(var x: Int, var y: Int, color: BlockColor, resources: Resources) :
 	BitmapDrawable(resources, BitmapFactory.decodeResource(resources, color.blockId)) {
 
 		init {
-			setBounds(0, 0, 100, 100)
+			setBounds(x, y, x + GamePiece.blockSize, y + GamePiece.blockSize)
 		}
 }
