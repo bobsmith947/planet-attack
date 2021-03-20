@@ -7,7 +7,7 @@ import android.graphics.drawable.BitmapDrawable
 class BlockDrawable(var x: Int, var y: Int, color: BlockColor, resources: Resources) :
 	BitmapDrawable(resources, BitmapFactory.decodeResource(resources, color.blockId)) {
 
-		init {
-			setBounds(x, y, x + GamePiece.blockSize, y + GamePiece.blockSize)
-		}
+	fun setBounds(x: Int, y: Int) {
+		super.setBounds(x, y, x + GamePiece.blockSize, y + GamePiece.blockSize)
+	}
 }
