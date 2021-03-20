@@ -87,7 +87,7 @@
 			app:layout_constraintTop_toTopOf="parent" />
 	</androidx.constraintlayout.widget.ConstraintLayout>
 
-	<View
+	<edu.mines.csci448.planetattack.view.GameView
 		android:id="@+id/game_view"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
