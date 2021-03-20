@@ -1,8 +1,8 @@
 <resources>
 	<string name="app_name">Planet Attack</string>
 	<string name="game_speed">Game Speed</string>
-	<string name="next_piece">Show Next Piece</string>
-	<string name="hold_piece">Show Hold Piece</string>
+	<string name="show_next_piece">Show Next Piece</string>
+	<string name="show_hold_piece">Show Hold Piece</string>
 	<string name="reset_data">Reset Data</string>
 	<string name="reset_data_summary">Clear scores and erase database.</string>
 	<string name="play_label">Play Game</string>

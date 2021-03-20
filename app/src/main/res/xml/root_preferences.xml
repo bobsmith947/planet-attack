@@ -1,5 +1,4 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
 	<ListPreference
 		app:key="speed"
@@ -11,12 +10,12 @@
 
 	<SwitchPreference
 		app:key="next"
-		app:title="@string/next_piece"
+		app:title="@string/show_next_piece"
 		app:defaultValue="true" />
 
 	<SwitchPreference
 		app:key="hold"
-		app:title="@string/hold_piece"
+		app:title="@string/show_hold_piece"
 		app:defaultValue="false" />
 
 	<Preference

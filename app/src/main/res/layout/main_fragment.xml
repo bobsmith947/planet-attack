@@ -7,9 +7,10 @@
 	android:background="@color/black">
 
 	<ImageView
-		android:id="@+id/imageView"
+		android:id="@+id/title_image_view"
 		android:layout_width="0dp"
 		android:layout_height="0dp"
+		android:contentDescription="@string/app_name"
 		android:src="@drawable/title_image_background"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
