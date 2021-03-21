@@ -39,9 +39,8 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 	private val pieces = ArrayDeque<GamePiece>()
 	private lateinit var speed: GameSpeed
 
-	override fun onActivityCreated(savedInstanceState: Bundle?) {
-		super.onActivityCreated(savedInstanceState)
-		(requireActivity() as AppCompatActivity).supportActionBar?.hide()
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
 		addPieces()
 		val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
 		speed = when (prefs.getString("speed", "")) {
@@ -50,12 +49,13 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 			"3" -> GameSpeed.FAST
 			else -> throw IllegalStateException()
 		}
-		resume()
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+		(requireActivity() as AppCompatActivity).supportActionBar?.hide()
 		_binding = FragmentGameBinding.inflate(inflater, container, false)
 		setButtonOnClickListeners()
+		resume()
 		binding.gameView.holder.addCallback(this)
 		return binding.root
 	}
