@@ -10,10 +10,12 @@ import android.view.SurfaceHolder
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import edu.mines.csci448.planetattack.BackPressListener
 import edu.mines.csci448.planetattack.GameSpeed
+import edu.mines.csci448.planetattack.R
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.GamePiece
 import edu.mines.csci448.planetattack.graphics.PieceShape
@@ -73,15 +75,27 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 
 	private fun pause() {
 		binding.menuOverlay.visibility = View.VISIBLE
-		binding.resumeButton.visibility = View.VISIBLE
-		binding.quitButton.visibility = View.VISIBLE
+		binding.menuButton.apply {
+			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_background)
+			isEnabled = false
+		}
+		binding.holdButton.apply {
+			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_background)
+			isEnabled = false
+		}
 		handler.removeCallbacks(pieceMover)
 	}
 
 	private fun resume() {
 		binding.menuOverlay.visibility = View.INVISIBLE
-		binding.resumeButton.visibility = View.INVISIBLE
-		binding.quitButton.visibility = View.INVISIBLE
+		binding.menuButton.apply {
+			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_foreground)
+			isEnabled = true
+		}
+		binding.holdButton.apply {
+			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_foreground)
+			isEnabled = true
+		}
 		handler.postDelayed(pieceMover, speed.dropDelayMillis)
 	}
 
