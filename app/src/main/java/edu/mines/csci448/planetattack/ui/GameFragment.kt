@@ -11,7 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import edu.mines.csci448.planetattack.BackPressListener
+import edu.mines.csci448.planetattack.GameSpeed
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.GamePiece
 import edu.mines.csci448.planetattack.graphics.PieceShape
@@ -28,26 +30,33 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		override fun run() {
 			movePiece()
 			drawPieces()
-			handler.postDelayed(this, 1000)
+			handler.postDelayed(this, speed.dropDelayMillis)
 		}
 
 	}
 
 	private var isPaused = false
 	private val pieces = ArrayDeque<GamePiece>()
+	private lateinit var speed: GameSpeed
 
 	override fun onActivityCreated(savedInstanceState: Bundle?) {
 		super.onActivityCreated(savedInstanceState)
 		(requireActivity() as AppCompatActivity).supportActionBar?.hide()
 		addPieces()
+		val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+		speed = when (prefs.getString("speed", "")) {
+			"1" -> GameSpeed.SLOW
+			"2" -> GameSpeed.MEDIUM
+			"3" -> GameSpeed.FAST
+			else -> throw IllegalStateException()
+		}
+		resume()
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 		_binding = FragmentGameBinding.inflate(inflater, container, false)
 		setButtonOnClickListeners()
-		resume()
 		binding.gameView.holder.addCallback(this)
-
 		return binding.root
 	}
 
@@ -73,7 +82,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		binding.menuOverlay.visibility = View.INVISIBLE
 		binding.resumeButton.visibility = View.INVISIBLE
 		binding.quitButton.visibility = View.INVISIBLE
-		handler.postDelayed(pieceMover, 1000)
+		handler.postDelayed(pieceMover, speed.dropDelayMillis)
 	}
 
 	private fun setButtonOnClickListeners() {
