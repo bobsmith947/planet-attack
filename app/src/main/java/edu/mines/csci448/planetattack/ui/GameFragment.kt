@@ -2,8 +2,6 @@ package edu.mines.csci448.planetattack.ui
 
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.SurfaceHolder
@@ -27,12 +25,11 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 	private var _holder: SurfaceHolder? = null
 	private val holder get() = _holder!!
 
-	private val handler = Handler(Looper.getMainLooper())
 	private val pieceMover = object : Runnable {
 		override fun run() {
 			movePiece()
 			drawPieces()
-			handler.postDelayed(this, speed.dropDelayMillis)
+			binding.gameView.postDelayed(this, speed.dropDelayMillis)
 		}
 
 	}
@@ -83,7 +80,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_background)
 			isEnabled = false
 		}
-		handler.removeCallbacks(pieceMover)
+		binding.gameView.removeCallbacks(pieceMover)
 	}
 
 	private fun resume() {
@@ -96,7 +93,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_foreground)
 			isEnabled = true
 		}
-		handler.postDelayed(pieceMover, speed.dropDelayMillis)
+		binding.gameView.postDelayed(pieceMover, speed.dropDelayMillis)
 	}
 
 	private fun setButtonOnClickListeners() {
