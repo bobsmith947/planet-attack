@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack.view
+package edu.mines.csci448.planetattack.graphics
 
 import android.content.res.Resources
 import android.graphics.Canvas

@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack.view
+package edu.mines.csci448.planetattack.graphics
 
 import androidx.annotation.DrawableRes
 import edu.mines.csci448.planetattack.R

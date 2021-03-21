@@ -9,10 +9,9 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import edu.mines.csci448.planetattack.BackPressListener
-import edu.mines.csci448.planetattack.R
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
-import edu.mines.csci448.planetattack.view.GamePiece
-import edu.mines.csci448.planetattack.view.PieceShape
+import edu.mines.csci448.planetattack.graphics.GamePiece
+import edu.mines.csci448.planetattack.graphics.PieceShape
 
 class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 	private var _binding: FragmentGameBinding? = null
