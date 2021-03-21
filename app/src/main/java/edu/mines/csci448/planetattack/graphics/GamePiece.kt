@@ -3,12 +3,44 @@ package edu.mines.csci448.planetattack.graphics
 import android.content.res.Resources
 import android.graphics.Canvas
 
-class GamePiece(var x: Int, var y: Int, shape: PieceShape, resources: Resources) {
+class GamePiece(var x: Int, var y: Int, val shape: PieceShape, resources: Resources) {
 	private val blocks: List<BlockDrawable>
 
 	init {
 		val color = BlockColor.values().random()
-		blocks = List(4) { BlockDrawable(0, 0, color, resources) }
+		blocks = List(4) { BlockDrawable(color, resources) }
+		makeShape()
+	}
+
+	companion object {
+		const val blockSize = 50
+	}
+
+	fun drawBlocks(canvas: Canvas) {
+		blocks.forEach { it.draw(canvas) }
+	}
+
+	fun moveUp() {
+		y -= blockSize
+		makeShape()
+	}
+
+	fun moveDown() {
+		y += blockSize
+		makeShape()
+	}
+
+	fun moveLeft() {
+		x -= blockSize
+		makeShape()
+	}
+
+	fun moveRight() {
+		x += blockSize
+		makeShape()
+	}
+
+	private fun makeShape() {
 		when (shape) {
 			PieceShape.I -> makeI()
 			PieceShape.J -> makeJ()
@@ -18,14 +50,6 @@ class GamePiece(var x: Int, var y: Int, shape: PieceShape, resources: Resources)
 			PieceShape.T -> makeT()
 			PieceShape.Z -> makeZ()
 		}
-	}
-
-	companion object {
-		const val blockSize = 50
-	}
-
-	fun drawBlocks(canvas: Canvas) {
-		blocks.forEach { it.draw(canvas) }
 	}
 
 	private fun makeI() {
