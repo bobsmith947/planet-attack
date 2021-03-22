@@ -24,6 +24,8 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 
 	private var _holder: SurfaceHolder? = null
 	private val holder get() = _holder!!
+	private var canvasWidth = 0
+	private var canvasHeight = 0
 
 	private val pieceMover = object : Runnable {
 		override fun run() {
@@ -31,16 +33,16 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 			drawPieces()
 			binding.gameView.postDelayed(this, speed.dropDelayMillis)
 		}
-
 	}
 
 	private var isPaused = false
 	private val pieces = ArrayDeque<GamePiece>()
+	private val nextQueue = ArrayDeque<GamePiece>()
 	private lateinit var speed: GameSpeed
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		addPieces()
+		//addTestPieces()
 		val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
 		speed = when (prefs.getString("speed", "")) {
 			"1" -> GameSpeed.SLOW
@@ -56,6 +58,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		setButtonOnClickListeners()
 		resume()
 		binding.gameView.holder.addCallback(this)
+		binding.gameView.setOnClickListener { addNextPiece() }
 		return binding.root
 	}
 
@@ -112,6 +115,15 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 
 	override fun surfaceCreated(holder: SurfaceHolder) {
 		_holder = holder
+		// when first initializing
+		if (canvasWidth == 0 && canvasHeight == 0) {
+			val canvas = holder.lockCanvas()
+			canvasWidth = canvas.width
+			canvasHeight = canvas.height
+			holder.unlockCanvasAndPost(canvas)
+			nextQueue.addAll(generateSequence(this::generatePiece).take(3))
+			addNextPiece()
+		}
 	}
 
 	override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
@@ -131,7 +143,8 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		holder.unlockCanvasAndPost(canvas)
 	}
 
-	private fun addPieces() {
+	// this function is used to test drawing all of the pieces on the screen
+	private fun addTestPieces() {
 		val res = resources
 		var pos = 0
 		pieces.apply {
@@ -143,6 +156,19 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 			add(GamePiece(let { pos += GamePiece.blockSize * 2; pos }, 0, PieceShape.T, res))
 			add(GamePiece(let { pos += GamePiece.blockSize * 2; pos }, 0, PieceShape.Z, res))
 		}
+	}
+
+	private fun addNextPiece() {
+		pieces.addLast(nextQueue.removeFirst())
+		nextQueue.addLast(generatePiece())
+		binding.firstNextImageView.setImageResource(nextQueue[0].shape.iconId)
+		binding.secondNextImageView.setImageResource(nextQueue[1].shape.iconId)
+		binding.thirdNextImageView.setImageResource(nextQueue[2].shape.iconId)
+	}
+
+	private fun generatePiece(): GamePiece {
+		val middle = canvasWidth / 2 - GamePiece.blockSize
+		return GamePiece(middle, 0, PieceShape.values().random(), resources)
 	}
 
 	private fun movePiece() {
