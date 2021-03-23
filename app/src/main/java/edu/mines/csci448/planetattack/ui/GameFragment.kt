@@ -59,6 +59,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		setButtonOnClickListeners()
 		resume()
 		binding.gameView.holder.addCallback(this)
+		// TODO make sure click doesn't register when game is paused
 		binding.gameView.setOnClickListener { addNextPiece() }
 		return binding.root
 	}
@@ -68,6 +69,11 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		binding.gameView.holder.removeCallback(this)
 		_binding = null
 		(requireActivity() as AppCompatActivity).supportActionBar?.show()
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		GamePiece.occupiedSpaces.clear()
 	}
 
 	override fun onBackPressed() {
@@ -119,6 +125,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		// when first initializing
 		if (canvasWidth == 0 && canvasHeight == 0) {
 			val canvas = holder.lockCanvas()
+			// TODO constrain drawing area to a multiple of blockSize
 			canvasWidth = canvas.width
 			canvasHeight = canvas.height
 			holder.unlockCanvasAndPost(canvas)
@@ -180,6 +187,6 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 
 	private fun movePiece() {
 		val piece = pieces.last()
-		piece.direction?.move(piece)
+		if (piece.direction?.move(piece) == false) addNextPiece()
 	}
 }

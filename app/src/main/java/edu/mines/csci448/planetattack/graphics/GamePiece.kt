@@ -2,23 +2,29 @@ package edu.mines.csci448.planetattack.graphics
 
 import android.content.res.Resources
 import android.graphics.Canvas
+import com.google.common.collect.BiMap
+import com.google.common.collect.HashBiMap
 
 class GamePiece(var x: Int, var y: Int, val shape: PieceShape,
 				resources: Resources, var direction: PieceDirection? = null) {
-	private val blocks: List<BlockDrawable>
+	internal val blocks: List<BlockDrawable>
 
 	init {
 		val color = BlockColor.values().random()
-		blocks = List(4) { BlockDrawable(color, resources) }
+		blocks = List(4) { BlockDrawable(color, resources, this) }
 		makeShape()
 	}
 
 	companion object {
 		const val blockSize = 50
+		val occupiedSpaces: BiMap<BlockDrawable, Pair<Int, Int>> = HashBiMap.create()
 	}
 
 	fun drawBlocks(canvas: Canvas) {
-		blocks.forEach { it.draw(canvas) }
+		blocks.forEach {
+			it.draw(canvas)
+			occupiedSpaces.forcePut(it, it.x to it.y)
+		}
 	}
 
 	fun makeShape() {
