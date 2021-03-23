@@ -16,6 +16,7 @@ import edu.mines.csci448.planetattack.GameSpeed
 import edu.mines.csci448.planetattack.R
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.GamePiece
+import edu.mines.csci448.planetattack.graphics.PieceDirection
 import edu.mines.csci448.planetattack.graphics.PieceShape
 
 class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
@@ -167,11 +168,18 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 	}
 
 	private fun generatePiece(): GamePiece {
-		val middle = canvasWidth / 2 - GamePiece.blockSize
-		return GamePiece(middle, 0, PieceShape.values().random(), resources)
+		val direction = PieceDirection.values().random()
+		val shape = PieceShape.values().random()
+		return when (direction) {
+			PieceDirection.UP -> GamePiece(canvasWidth / 2 - GamePiece.blockSize, canvasHeight - GamePiece.blockSize * shape.height, shape, resources, direction)
+			PieceDirection.DOWN -> GamePiece(canvasWidth / 2 - GamePiece.blockSize, 0, shape, resources, direction)
+			PieceDirection.LEFT -> GamePiece(0, canvasHeight / 2 - GamePiece.blockSize, shape, resources, direction)
+			PieceDirection.RIGHT -> GamePiece(canvasWidth - GamePiece.blockSize * shape.width, canvasHeight / 2 - GamePiece.blockSize, shape, resources, direction)
+		}
 	}
 
 	private fun movePiece() {
-		pieces.last().moveDown()
+		val piece = pieces.last()
+		piece.direction?.move(piece)
 	}
 }

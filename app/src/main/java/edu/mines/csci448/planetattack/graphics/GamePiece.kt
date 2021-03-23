@@ -3,7 +3,8 @@ package edu.mines.csci448.planetattack.graphics
 import android.content.res.Resources
 import android.graphics.Canvas
 
-class GamePiece(var x: Int, var y: Int, val shape: PieceShape, resources: Resources) {
+class GamePiece(var x: Int, var y: Int, val shape: PieceShape,
+				resources: Resources, var direction: PieceDirection? = null) {
 	private val blocks: List<BlockDrawable>
 
 	init {
@@ -20,27 +21,7 @@ class GamePiece(var x: Int, var y: Int, val shape: PieceShape, resources: Resour
 		blocks.forEach { it.draw(canvas) }
 	}
 
-	fun moveUp() {
-		y -= blockSize
-		makeShape()
-	}
-
-	fun moveDown() {
-		y += blockSize
-		makeShape()
-	}
-
-	fun moveLeft() {
-		x -= blockSize
-		makeShape()
-	}
-
-	fun moveRight() {
-		x += blockSize
-		makeShape()
-	}
-
-	private fun makeShape() {
+	fun makeShape() {
 		when (shape) {
 			PieceShape.I -> makeI()
 			PieceShape.J -> makeJ()
