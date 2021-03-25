@@ -8,7 +8,7 @@ enum class PieceDirection {
 			return if (!piece.blocks.all { pieceContains(piece, it.x, it.y - GamePiece.blockSize) }) false
 			else {
 				piece.y -= GamePiece.blockSize
-				piece.makeShape()
+				piece.shape.make(piece)
 				true
 			}
 		}
@@ -18,27 +18,27 @@ enum class PieceDirection {
 			return if (!piece.blocks.all { pieceContains(piece, it.x, it.y + GamePiece.blockSize) }) false
 			else {
 				piece.y += GamePiece.blockSize
-				piece.makeShape()
+				piece.shape.make(piece)
 				true
 			}
 		}
 	},
 	LEFT {
 		override fun move(piece: GamePiece): Boolean {
-			return if (!piece.blocks.all { pieceContains(piece, it.x + GamePiece.blockSize, it.y) }) false
+			return if (!piece.blocks.all { pieceContains(piece, it.x - GamePiece.blockSize, it.y) }) false
 			else {
-				piece.x += GamePiece.blockSize
-				piece.makeShape()
+				piece.x -= GamePiece.blockSize
+				piece.shape.make(piece)
 				true
 			}
 		}
 	},
 	RIGHT {
 		override fun move(piece: GamePiece): Boolean {
-			return if (!piece.blocks.all { pieceContains(piece, it.x - GamePiece.blockSize, it.y) }) false
+			return if (!piece.blocks.all { pieceContains(piece, it.x + GamePiece.blockSize, it.y) }) false
 			else {
-				piece.x -= GamePiece.blockSize
-				piece.makeShape()
+				piece.x += GamePiece.blockSize
+				piece.shape.make(piece)
 				true
 			}
 		}

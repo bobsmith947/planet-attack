@@ -178,10 +178,22 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		val direction = PieceDirection.values().random()
 		val shape = PieceShape.values().random()
 		return when (direction) {
-			PieceDirection.UP -> GamePiece(canvasWidth / 2 - GamePiece.blockSize, canvasHeight - GamePiece.blockSize * shape.height, shape, resources, direction)
-			PieceDirection.DOWN -> GamePiece(canvasWidth / 2 - GamePiece.blockSize, 0, shape, resources, direction)
-			PieceDirection.LEFT -> GamePiece(0, canvasHeight / 2 - GamePiece.blockSize, shape, resources, direction)
-			PieceDirection.RIGHT -> GamePiece(canvasWidth - GamePiece.blockSize * shape.width, canvasHeight / 2 - GamePiece.blockSize, shape, resources, direction)
+			PieceDirection.UP -> {
+				shape.createLayout(PieceShape.ROTATION_180)
+				GamePiece(canvasWidth / 2 - GamePiece.blockSize, canvasHeight - GamePiece.blockSize * shape.height, shape, resources, direction)
+			}
+			PieceDirection.DOWN -> {
+				shape.createLayout(PieceShape.ROTATION_0)
+				GamePiece(canvasWidth / 2 - GamePiece.blockSize, 0, shape, resources, direction)
+			}
+			PieceDirection.LEFT -> {
+				shape.createLayout(PieceShape.ROTATION_90)
+				GamePiece(canvasWidth - GamePiece.blockSize * shape.width, canvasHeight / 2 - GamePiece.blockSize, shape, resources, direction)
+			}
+			PieceDirection.RIGHT -> {
+				shape.createLayout(PieceShape.ROTATION_270)
+				GamePiece(0, canvasHeight / 2 - GamePiece.blockSize, shape, resources, direction)
+			}
 		}
 	}
 
