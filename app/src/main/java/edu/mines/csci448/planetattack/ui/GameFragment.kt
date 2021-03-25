@@ -18,6 +18,7 @@ import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.GamePiece
 import edu.mines.csci448.planetattack.graphics.PieceDirection
 import edu.mines.csci448.planetattack.graphics.PieceShape
+import kotlin.reflect.full.createInstance
 
 class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 	private var _binding: FragmentGameBinding? = null
@@ -151,21 +152,6 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		holder.unlockCanvasAndPost(canvas)
 	}
 
-	// this function is used to test drawing all of the pieces on the screen
-	private fun addTestPieces() {
-		val res = resources
-		var pos = 0
-		pieces.apply {
-			add(GamePiece(0, 0, PieceShape.I, res))
-			add(GamePiece(let { pos += GamePiece.blockSize; pos }, 0, PieceShape.J, res))
-			add(GamePiece(let { pos += GamePiece.blockSize * 2; pos }, 0, PieceShape.L, res))
-			add(GamePiece(let { pos += GamePiece.blockSize * 2; pos }, 0, PieceShape.O, res))
-			add(GamePiece(let { pos += GamePiece.blockSize * 2; pos }, 0, PieceShape.S, res))
-			add(GamePiece(let { pos += GamePiece.blockSize * 2; pos }, 0, PieceShape.T, res))
-			add(GamePiece(let { pos += GamePiece.blockSize * 2; pos }, 0, PieceShape.Z, res))
-		}
-	}
-
 	private fun addNextPiece() {
 		pieces.addLast(nextQueue.removeFirst())
 		nextQueue.addLast(generatePiece())
@@ -176,7 +162,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 
 	private fun generatePiece(): GamePiece {
 		val direction = PieceDirection.values().random()
-		val shape = PieceShape.values().random()
+		val shape = PieceShape::class.sealedSubclasses.random().createInstance()
 		return when (direction) {
 			PieceDirection.UP -> {
 				shape.createLayout(PieceShape.ROTATION_180)
