@@ -12,6 +12,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import edu.mines.csci448.planetattack.BackPressListener
+import edu.mines.csci448.planetattack.BuildConfig
 import edu.mines.csci448.planetattack.GameSpeed
 import edu.mines.csci448.planetattack.R
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
@@ -28,6 +29,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 	private val holder get() = _holder!!
 	private var canvasWidth = 0
 	private var canvasHeight = 0
+	private var canvasMargin = 0
 
 	private val pieceMover = object : Runnable {
 		override fun run() {
@@ -126,9 +128,14 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		// when first initializing
 		if (canvasWidth == 0 && canvasHeight == 0) {
 			val canvas = holder.lockCanvas()
-			// TODO constrain drawing area to a multiple of blockSize
 			canvasWidth = canvas.width
 			canvasHeight = canvas.height
+			if (BuildConfig.DEBUG && canvasWidth != canvasHeight) {
+				error("Assertion failed")
+			}
+			canvasMargin = canvasWidth % GamePiece.blockSize
+			canvasWidth -= canvasMargin
+			canvasHeight -= canvasMargin
 			holder.unlockCanvasAndPost(canvas)
 			nextQueue.addAll(generateSequence(this::generatePiece).take(3))
 			addNextPiece()
@@ -166,19 +173,19 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		return when (direction) {
 			PieceDirection.UP -> {
 				shape.createLayout(PieceShape.ROTATION_180)
-				GamePiece(canvasWidth / 2 - GamePiece.blockSize, canvasHeight - GamePiece.blockSize * shape.height, shape, resources, direction)
+				GamePiece((canvasWidth / 2) - (GamePiece.blockSize / 2), canvasHeight - (GamePiece.blockSize * shape.height), shape, resources, direction)
 			}
 			PieceDirection.DOWN -> {
 				shape.createLayout(PieceShape.ROTATION_0)
-				GamePiece(canvasWidth / 2 - GamePiece.blockSize, 0, shape, resources, direction)
+				GamePiece((canvasWidth / 2) - (GamePiece.blockSize / 2), 0, shape, resources, direction)
 			}
 			PieceDirection.LEFT -> {
 				shape.createLayout(PieceShape.ROTATION_90)
-				GamePiece(canvasWidth - GamePiece.blockSize * shape.width, canvasHeight / 2 - GamePiece.blockSize, shape, resources, direction)
+				GamePiece(canvasWidth - (GamePiece.blockSize * shape.width), (canvasHeight / 2) - (GamePiece.blockSize / 2), shape, resources, direction)
 			}
 			PieceDirection.RIGHT -> {
 				shape.createLayout(PieceShape.ROTATION_270)
-				GamePiece(0, canvasHeight / 2 - GamePiece.blockSize, shape, resources, direction)
+				GamePiece(0, (canvasHeight / 2) - (GamePiece.blockSize / 2), shape, resources, direction)
 			}
 		}
 	}
