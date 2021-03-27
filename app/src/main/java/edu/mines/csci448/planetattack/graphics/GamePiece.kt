@@ -5,8 +5,10 @@ import android.graphics.Canvas
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 
-class GamePiece(var x: Int, var y: Int, val shape: PieceShape,
-				resources: Resources, var direction: PieceDirection? = null) {
+class GamePiece(
+	var x: Int, var y: Int, val shape: PieceShape,
+	var direction: PieceDirection, resources: Resources
+) {
 	internal val blocks: List<BlockDrawable>
 
 	init {

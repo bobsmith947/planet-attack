@@ -173,25 +173,49 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		return when (direction) {
 			PieceDirection.UP -> {
 				shape.createLayout(PieceShape.ROTATION_180)
-				GamePiece((canvasWidth / 2) - (GamePiece.blockSize / 2), canvasHeight - (GamePiece.blockSize * shape.height), shape, resources, direction)
+				GamePiece(
+					(canvasWidth / 2) - (GamePiece.blockSize / 2),
+					canvasHeight - (GamePiece.blockSize * shape.height),
+					shape,
+					direction,
+					resources
+				)
 			}
 			PieceDirection.DOWN -> {
 				shape.createLayout(PieceShape.ROTATION_0)
-				GamePiece((canvasWidth / 2) - (GamePiece.blockSize / 2), 0, shape, resources, direction)
+				GamePiece(
+					(canvasWidth / 2) - (GamePiece.blockSize / 2),
+					0,
+					shape,
+					direction,
+					resources
+				)
 			}
 			PieceDirection.LEFT -> {
 				shape.createLayout(PieceShape.ROTATION_90)
-				GamePiece(canvasWidth - (GamePiece.blockSize * shape.width), (canvasHeight / 2) - (GamePiece.blockSize / 2), shape, resources, direction)
+				GamePiece(
+					canvasWidth - (GamePiece.blockSize * shape.width),
+					(canvasHeight / 2) - (GamePiece.blockSize / 2),
+					shape,
+					direction,
+					resources
+				)
 			}
 			PieceDirection.RIGHT -> {
 				shape.createLayout(PieceShape.ROTATION_270)
-				GamePiece(0, (canvasHeight / 2) - (GamePiece.blockSize / 2), shape, resources, direction)
+				GamePiece(
+					0,
+					(canvasHeight / 2) - (GamePiece.blockSize / 2),
+					shape,
+					direction,
+					resources
+				)
 			}
 		}
 	}
 
 	private fun movePiece() {
 		val piece = pieces.last()
-		if (piece.direction?.move(piece) == false) addNextPiece()
+		if (!piece.direction.move(piece)) addNextPiece()
 	}
 }
