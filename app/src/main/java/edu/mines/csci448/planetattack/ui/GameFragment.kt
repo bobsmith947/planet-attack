@@ -61,7 +61,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		resume()
 		binding.gameView.holder.addCallback(this)
 		// TODO make sure click doesn't register when game is paused
-		binding.gameView.setOnClickListener { addNextPiece() }
+		binding.gameView.setOnClickListener { rotatePiece() }
 		return binding.root
 	}
 
@@ -225,5 +225,10 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 	private fun movePiece() {
 		val piece = pieces.last()
 		if (!piece.direction.move(piece)) addNextPiece()
+	}
+
+	private fun rotatePiece() {
+		val piece = pieces.last()
+		piece.shape.createLayout((piece.shape.rotation + PieceShape.ROTATION_90) % PieceShape.ROTATION_360)
 	}
 }

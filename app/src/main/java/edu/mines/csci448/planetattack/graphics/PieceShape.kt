@@ -13,6 +13,7 @@ sealed class PieceShape(@DrawableRes val iconId: Int) {
 	// true represents the presence of the block
 	// false represents no block
 	protected lateinit var layout: Array<BooleanArray>
+	var rotation = ROTATION_360
 
 	@Throws(IllegalArgumentException::class)
 	abstract fun createLayout(rotation: Int)
@@ -35,6 +36,7 @@ sealed class PieceShape(@DrawableRes val iconId: Int) {
 		const val ROTATION_90 = 90
 		const val ROTATION_180 = 180
 		const val ROTATION_270 = 270
+		const val ROTATION_360 = 360
 	}
 }
 
@@ -48,6 +50,7 @@ class ShapeI : PieceShape(R.drawable.block_icon_i) {
 	private val horizontal = arrayOf(booleanArrayOf(true, true, true, true))
 
 	override fun createLayout(rotation: Int) {
+		this.rotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> vertical
 			ROTATION_90 -> horizontal
@@ -79,6 +82,7 @@ class ShapeJ : PieceShape(R.drawable.block_icon_j) {
 	)
 
 	override fun createLayout(rotation: Int) {
+		this.rotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> r0
 			ROTATION_90 -> r90
@@ -110,6 +114,7 @@ class ShapeL : PieceShape(R.drawable.block_icon_l) {
 	)
 
 	override fun createLayout(rotation: Int) {
+		this.rotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> r0
 			ROTATION_90 -> r90
@@ -122,6 +127,7 @@ class ShapeL : PieceShape(R.drawable.block_icon_l) {
 
 class ShapeO : PieceShape(R.drawable.block_icon_o) {
 	override fun createLayout(rotation: Int) {
+		this.rotation = rotation
 		layout = arrayOf(
 			booleanArrayOf(true, true),
 			booleanArrayOf(true, true)
@@ -150,6 +156,7 @@ class ShapeS : PieceShape(R.drawable.block_icon_s) {
 	)
 
 	override fun createLayout(rotation: Int) {
+		this.rotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> r0
 			ROTATION_90 -> r90
@@ -181,6 +188,7 @@ class ShapeT : PieceShape(R.drawable.block_icon_t) {
 	)
 
 	override fun createLayout(rotation: Int) {
+		this.rotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> r0
 			ROTATION_90 -> r90
@@ -212,6 +220,7 @@ class ShapeZ : PieceShape(R.drawable.block_icon_z) {
 	)
 
 	override fun createLayout(rotation: Int) {
+		this.rotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> r0
 			ROTATION_90 -> r90
