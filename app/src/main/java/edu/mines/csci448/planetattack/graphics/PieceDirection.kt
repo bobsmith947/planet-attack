@@ -46,5 +46,17 @@ enum class PieceDirection {
 
 	abstract fun move(piece: GamePiece): Boolean
 	protected val usedBlocks: BiMap<Pair<Int, Int>, BlockDrawable> = GamePiece.occupiedSpaces.inverse()
-	protected fun pieceContains(piece: GamePiece, x: Int, y: Int) = usedBlocks[x to y]?.piece ?: piece === piece
+
+	// determines whether the coordinates are available to move to
+	protected fun pieceContains(piece: GamePiece, x: Int, y: Int): Boolean {
+		val block = usedBlocks[x to y]
+		if (block != null) {
+			// check if the block corresponds to the same piece as the given one
+			// this is true in the case of a piece that overlaps itself when translated
+			// otherwise, the coordinates belong to another piece
+			return block.piece === piece
+		}
+		// the coordinates are empty
+		return true
+	}
 }

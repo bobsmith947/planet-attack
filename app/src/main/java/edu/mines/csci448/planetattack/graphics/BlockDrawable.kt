@@ -3,7 +3,7 @@ package edu.mines.csci448.planetattack.graphics
 import android.content.res.Resources
 import android.graphics.drawable.BitmapDrawable
 
-class BlockDrawable(color: BlockColor, resources: Resources, val piece: GamePiece) :
+class BlockDrawable(color: BlockColor, resources: Resources, val piece: GamePiece?) :
 	BitmapDrawable(resources, color.getBitmap(resources)) {
 	internal var x = 0
 	internal var y = 0

@@ -16,9 +16,7 @@ import edu.mines.csci448.planetattack.BuildConfig
 import edu.mines.csci448.planetattack.GameSpeed
 import edu.mines.csci448.planetattack.R
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
-import edu.mines.csci448.planetattack.graphics.GamePiece
-import edu.mines.csci448.planetattack.graphics.PieceDirection
-import edu.mines.csci448.planetattack.graphics.PieceShape
+import edu.mines.csci448.planetattack.graphics.*
 import kotlin.reflect.full.createInstance
 
 class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
@@ -43,10 +41,10 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 	private val pieces = ArrayDeque<GamePiece>()
 	private val nextQueue = ArrayDeque<GamePiece>()
 	private lateinit var speed: GameSpeed
+	private lateinit var planetBlock: BlockDrawable
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		//addTestPieces()
 		val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
 		speed = when (prefs.getString("speed", "")) {
 			"1" -> GameSpeed.SLOW
@@ -130,13 +128,22 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 			val canvas = holder.lockCanvas()
 			canvasWidth = canvas.width
 			canvasHeight = canvas.height
+			holder.unlockCanvasAndPost(canvas)
 			if (BuildConfig.DEBUG && canvasWidth != canvasHeight) {
 				error("Assertion failed")
 			}
+			// make sure canvas is a multiple of block size so pieces are aligned
 			canvasMargin = canvasWidth % GamePiece.blockSize
 			canvasWidth -= canvasMargin
 			canvasHeight -= canvasMargin
-			holder.unlockCanvasAndPost(canvas)
+
+			// add "planet" to center
+			planetBlock = BlockDrawable(BlockColor.GRAY, resources, null)
+			val x = (canvasWidth / 2) - (GamePiece.blockSize / 2)
+			val y = (canvasHeight / 2) - (GamePiece.blockSize / 2)
+			planetBlock.setBounds(x, y)
+			GamePiece.occupiedSpaces[planetBlock] = x to y
+
 			nextQueue.addAll(generateSequence(this::generatePiece).take(3))
 			addNextPiece()
 		}
@@ -155,6 +162,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		val canvas = holder.lockCanvas()
 		// reset the canvas
 		canvas.drawColor(Color.BLACK)
+		planetBlock.draw(canvas)
 		pieces.forEach { it.drawBlocks(canvas) }
 		holder.unlockCanvasAndPost(canvas)
 	}
