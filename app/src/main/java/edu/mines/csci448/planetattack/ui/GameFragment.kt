@@ -226,7 +226,15 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 
 	private fun movePiece() {
 		val piece = pieces.last()
-		if (!piece.direction.move(piece)) addNextPiece()
+		if (!piece.direction.move(piece)) {
+			// check for completed rings
+			clearRings()
+			// force garbage collection to get rid of cleared blocks
+			System.gc()
+			// move pieces to fill in cleared spaces
+			pieces.forEach { it.direction.move(it) }
+			addNextPiece()
+		}
 	}
 
 	private fun rotatePiece() {
@@ -253,7 +261,9 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 				// bottom left
 				(center - offset) to (center + offset)
 			)
-			rings[i].addAll(diagonals)
+			// this is commented out to make testing easier
+			//rings[i].addAll(diagonals)
+
 			// add spaces bordering previous ring
 			for (j in rings[i - 1]) {
 				if (j.first <= center) rings[i].add((j.first - GamePiece.blockSize) to j.second)
@@ -261,6 +271,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 				if (j.second <= center) rings[i].add(j.first to (j.second - GamePiece.blockSize))
 				if (j.second >= center) rings[i].add(j.first to (j.second + GamePiece.blockSize))
 			}
+
 			// remove interior spaces
 			rings[i].removeIf {
 				(it.first in (diagonals[0].first + 1)..center && it.second in (diagonals[0].second + 1)..center) ||
@@ -271,5 +282,20 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		}
 		// remove center coordinates
 		rings = rings.drop(1)
+	}
+
+	private fun clearRings() {
+		rings.forEach { ring ->
+			if (GamePiece.occupiedSpaces.values.containsAll(ring)) {
+				ring.forEach {
+					val block = GamePiece.occupiedSpaces.inverse()[it]
+					if (block != null) {
+						GamePiece.occupiedSpaces.remove(block)
+						val blocks = block.piece!!.blocks
+						blocks[blocks.indexOf(block)] = null
+					}
+				}
+			}
+		}
 	}
 }

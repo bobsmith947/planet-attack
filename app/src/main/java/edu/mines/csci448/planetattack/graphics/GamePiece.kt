@@ -9,11 +9,11 @@ class GamePiece(
 	var x: Int, var y: Int, val shape: PieceShape,
 	var direction: PieceDirection, resources: Resources
 ) {
-	internal val blocks: List<BlockDrawable>
+	val blocks: MutableList<BlockDrawable?>
 
 	init {
 		val color = BlockColor.values().random()
-		blocks = List(4) { BlockDrawable(color, resources, this) }
+		blocks = MutableList(4) { BlockDrawable(color, resources, this) }
 	}
 
 	companion object {
@@ -23,8 +23,10 @@ class GamePiece(
 
 	fun drawBlocks(canvas: Canvas) {
 		blocks.forEach {
-			it.draw(canvas)
-			occupiedSpaces.forcePut(it, it.x to it.y)
+			if (it != null) {
+				it.draw(canvas)
+				occupiedSpaces.forcePut(it, it.x to it.y)
+			}
 		}
 	}
 }

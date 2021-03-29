@@ -24,7 +24,7 @@ sealed class PieceShape(@DrawableRes val iconId: Int) {
 		for (i in 0 until height) {
 			for (j in 0 until width) {
 				if (layout[i][j])
-					piece.blocks[blockNum++].setBounds(piece.x + GamePiece.blockSize * j,
+					piece.blocks[blockNum++]?.setBounds(piece.x + GamePiece.blockSize * j,
 						piece.y + GamePiece.blockSize * i)
 			}
 		}

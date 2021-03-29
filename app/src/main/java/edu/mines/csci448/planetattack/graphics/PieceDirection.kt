@@ -5,7 +5,7 @@ import com.google.common.collect.BiMap
 enum class PieceDirection {
 	UP {
 		override fun move(piece: GamePiece): Boolean {
-			return if (!piece.blocks.all { pieceContains(piece, it.x, it.y - GamePiece.blockSize) }) false
+			return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x, it.y - GamePiece.blockSize) }) false
 			else {
 				piece.y -= GamePiece.blockSize
 				piece.shape.make(piece)
@@ -15,7 +15,7 @@ enum class PieceDirection {
 	},
 	DOWN {
 		override fun move(piece: GamePiece): Boolean {
-			return if (!piece.blocks.all { pieceContains(piece, it.x, it.y + GamePiece.blockSize) }) false
+			return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x, it.y + GamePiece.blockSize) }) false
 			else {
 				piece.y += GamePiece.blockSize
 				piece.shape.make(piece)
@@ -25,7 +25,7 @@ enum class PieceDirection {
 	},
 	LEFT {
 		override fun move(piece: GamePiece): Boolean {
-			return if (!piece.blocks.all { pieceContains(piece, it.x - GamePiece.blockSize, it.y) }) false
+			return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x - GamePiece.blockSize, it.y) }) false
 			else {
 				piece.x -= GamePiece.blockSize
 				piece.shape.make(piece)
@@ -35,7 +35,7 @@ enum class PieceDirection {
 	},
 	RIGHT {
 		override fun move(piece: GamePiece): Boolean {
-			return if (!piece.blocks.all { pieceContains(piece, it.x + GamePiece.blockSize, it.y) }) false
+			return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x + GamePiece.blockSize, it.y) }) false
 			else {
 				piece.x += GamePiece.blockSize
 				piece.shape.make(piece)
@@ -45,11 +45,10 @@ enum class PieceDirection {
 	};
 
 	abstract fun move(piece: GamePiece): Boolean
-	protected val usedBlocks: BiMap<Pair<Int, Int>, BlockDrawable> = GamePiece.occupiedSpaces.inverse()
 
 	// determines whether the coordinates are available to move to
 	protected fun pieceContains(piece: GamePiece, x: Int, y: Int): Boolean {
-		val block = usedBlocks[x to y]
+		val block = GamePiece.occupiedSpaces.inverse()[x to y]
 		if (block != null) {
 			// check if the block corresponds to the same piece as the given one
 			// this is true in the case of a piece that overlaps itself when translated
