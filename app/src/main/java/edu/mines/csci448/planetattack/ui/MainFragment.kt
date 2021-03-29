@@ -32,7 +32,7 @@ class MainFragment : Fragment() {
 
 		binding.helpButton.setOnClickListener {
 			AlertDialog.Builder(context)
-				.setTitle(R.string.help_title)
+				.setTitle(R.string.help_label)
 				.setMessage(R.string.help_text)
 				.setNeutralButton(R.string.help_okay, null)
 				.show()
