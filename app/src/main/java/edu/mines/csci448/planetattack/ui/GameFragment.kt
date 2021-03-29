@@ -1,14 +1,13 @@
 package edu.mines.csci448.planetattack.ui
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.SurfaceHolder
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.GestureDetectorCompat
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import edu.mines.csci448.planetattack.BackPressListener
@@ -19,7 +18,8 @@ import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.*
 import kotlin.reflect.full.createInstance
 
-class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
+class GameFragment : Fragment(),
+	BackPressListener, SurfaceHolder.Callback, GestureDetector.OnGestureListener {
 	private var _binding: FragmentGameBinding? = null
 	private val binding get() = _binding!!
 
@@ -55,6 +55,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		}
 	}
 
+	@SuppressLint("ClickableViewAccessibility")
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 		(requireActivity() as AppCompatActivity).supportActionBar?.hide()
 		_binding = FragmentGameBinding.inflate(inflater, container, false)
@@ -62,7 +63,10 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 		resume()
 		binding.gameView.holder.addCallback(this)
 		// TODO make sure click doesn't register when game is paused
-		binding.gameView.setOnClickListener { rotatePiece() }
+		val detector = GestureDetectorCompat(requireContext(), this)
+		binding.gameView.setOnTouchListener { _, event ->
+			detector.onTouchEvent(event)
+		}
 		return binding.root
 	}
 
@@ -226,14 +230,30 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 
 	private fun movePiece() {
 		val piece = pieces.last()
-		if (!piece.direction.move(piece)) {
+		if (!piece.direction.drop(piece)) {
 			// check for completed rings
 			clearRings()
-			// force garbage collection to get rid of cleared blocks
-			System.gc()
-			// move pieces to fill in cleared spaces
-			pieces.forEach { it.direction.move(it) }
 			addNextPiece()
+		}
+
+		// adjust direction if reached other side
+		piece.direction = when (piece.direction) {
+			PieceDirection.UP -> {
+				if (piece.y <= 0) PieceDirection.DOWN
+				else PieceDirection.UP
+			}
+			PieceDirection.DOWN -> {
+				if (piece.y >= canvasHeight - (GamePiece.blockSize * piece.shape.height)) PieceDirection.UP
+				else PieceDirection.DOWN
+			}
+			PieceDirection.LEFT -> {
+				if (piece.x <= 0) PieceDirection.RIGHT
+				else PieceDirection.LEFT
+			}
+			PieceDirection.RIGHT -> {
+				if (piece.x >= canvasWidth - (GamePiece.blockSize * piece.shape.width)) PieceDirection.LEFT
+				else PieceDirection.RIGHT
+			}
 		}
 	}
 
@@ -261,8 +281,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 				// bottom left
 				(center - offset) to (center + offset)
 			)
-			// this is commented out to make testing easier
-			//rings[i].addAll(diagonals)
+			rings[i].addAll(diagonals)
 
 			// add spaces bordering previous ring
 			for (j in rings[i - 1]) {
@@ -295,7 +314,61 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 						blocks[blocks.indexOf(block)] = null
 					}
 				}
+				// move pieces to fill in cleared spaces
+				pieces.forEach { it.direction.drop(it) }
 			}
 		}
+	}
+
+	override fun onDown(e: MotionEvent?): Boolean {
+		return true
+	}
+
+	override fun onShowPress(e: MotionEvent?) {
+		return
+	}
+
+	override fun onSingleTapUp(e: MotionEvent?): Boolean {
+		rotatePiece()
+		return true
+	}
+
+	override fun onScroll(
+		e1: MotionEvent?,
+		e2: MotionEvent?,
+		distanceX: Float,
+		distanceY: Float
+	): Boolean {
+		return true
+	}
+
+	override fun onLongPress(e: MotionEvent?) {
+		val piece = pieces.last()
+		while (piece.x in GamePiece.blockSize until canvasWidth - (GamePiece.blockSize * piece.shape.width) &&
+			piece.y in GamePiece.blockSize until canvasHeight - (GamePiece.blockSize * piece.shape.height) &&
+			piece.direction.drop(piece)) {
+			movePiece()
+		}
+		movePiece()
+	}
+
+	override fun onFling(
+		e1: MotionEvent?,
+		e2: MotionEvent?,
+		velocityX: Float,
+		velocityY: Float
+	): Boolean {
+		val piece = pieces.last()
+		when (piece.direction) {
+			PieceDirection.UP, PieceDirection.DOWN -> {
+				if (velocityX < 0) piece.direction.moveLeft(piece)
+				else if (velocityX > 0) piece.direction.moveRight(piece)
+			}
+			PieceDirection.LEFT, PieceDirection.RIGHT -> {
+				if (velocityY < 0) piece.direction.moveUp(piece)
+				else if (velocityY > 0) piece.direction.moveDown(piece)
+			}
+		}
+		return true
 	}
 }

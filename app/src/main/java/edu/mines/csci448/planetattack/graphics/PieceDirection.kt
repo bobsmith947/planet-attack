@@ -1,50 +1,56 @@
 package edu.mines.csci448.planetattack.graphics
 
-import com.google.common.collect.BiMap
-
 enum class PieceDirection {
 	UP {
-		override fun move(piece: GamePiece): Boolean {
-			return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x, it.y - GamePiece.blockSize) }) false
-			else {
-				piece.y -= GamePiece.blockSize
-				piece.shape.make(piece)
-				true
-			}
-		}
+		override fun drop(piece: GamePiece) = moveUp(piece)
 	},
 	DOWN {
-		override fun move(piece: GamePiece): Boolean {
-			return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x, it.y + GamePiece.blockSize) }) false
-			else {
-				piece.y += GamePiece.blockSize
-				piece.shape.make(piece)
-				true
-			}
-		}
+		override fun drop(piece: GamePiece) = moveDown(piece)
 	},
 	LEFT {
-		override fun move(piece: GamePiece): Boolean {
-			return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x - GamePiece.blockSize, it.y) }) false
-			else {
-				piece.x -= GamePiece.blockSize
-				piece.shape.make(piece)
-				true
-			}
-		}
+		override fun drop(piece: GamePiece) = moveLeft(piece)
 	},
 	RIGHT {
-		override fun move(piece: GamePiece): Boolean {
-			return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x + GamePiece.blockSize, it.y) }) false
-			else {
-				piece.x += GamePiece.blockSize
-				piece.shape.make(piece)
-				true
-			}
-		}
+		override fun drop(piece: GamePiece) = moveRight(piece)
 	};
 
-	abstract fun move(piece: GamePiece): Boolean
+	abstract fun drop(piece: GamePiece): Boolean
+
+	fun moveUp(piece: GamePiece): Boolean {
+		return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x, it.y - GamePiece.blockSize) }) false
+		else {
+			piece.y -= GamePiece.blockSize
+			piece.shape.make(piece)
+			true
+		}
+	}
+
+	fun moveDown(piece: GamePiece): Boolean {
+		return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x, it.y + GamePiece.blockSize) }) false
+		else {
+			piece.y += GamePiece.blockSize
+			piece.shape.make(piece)
+			true
+		}
+	}
+
+	fun moveLeft(piece: GamePiece): Boolean {
+		return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x - GamePiece.blockSize, it.y) }) false
+		else {
+			piece.x -= GamePiece.blockSize
+			piece.shape.make(piece)
+			true
+		}
+	}
+
+	fun moveRight(piece: GamePiece): Boolean {
+		return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x + GamePiece.blockSize, it.y) }) false
+		else {
+			piece.x += GamePiece.blockSize
+			piece.shape.make(piece)
+			true
+		}
+	}
 
 	// determines whether the coordinates are available to move to
 	protected fun pieceContains(piece: GamePiece, x: Int, y: Int): Boolean {
