@@ -42,6 +42,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 	private val nextQueue = ArrayDeque<GamePiece>()
 	private lateinit var speed: GameSpeed
 	private lateinit var planetBlock: BlockDrawable
+	private lateinit var rings: List<MutableSet<Pair<Int, Int>>>
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -144,6 +145,7 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 			planetBlock.setBounds(x, y)
 			GamePiece.occupiedSpaces[planetBlock] = x to y
 
+			calculateRings()
 			nextQueue.addAll(generateSequence(this::generatePiece).take(3))
 			addNextPiece()
 		}
@@ -230,5 +232,44 @@ class GameFragment : Fragment(), BackPressListener, SurfaceHolder.Callback {
 	private fun rotatePiece() {
 		val piece = pieces.last()
 		piece.shape.createLayout((piece.shape.rotation + PieceShape.ROTATION_90) % PieceShape.ROTATION_360)
+	}
+
+	private fun calculateRings() {
+		val center = (canvasHeight / 2) - (GamePiece.blockSize / 2)
+		val numRings = center / GamePiece.blockSize
+		rings = List(numRings) { LinkedHashSet() }
+		// add center coordinates to use for calculating first ring
+		rings[0].add(center to center)
+		for (i in 1 until numRings) {
+			// add diagonal spaces
+			val offset = GamePiece.blockSize * i
+			val diagonals = arrayOf(
+				// top left
+				(center - offset) to (center - offset),
+				// top right
+				(center + offset) to (center - offset),
+				// bottom right
+				(center + offset) to (center + offset),
+				// bottom left
+				(center - offset) to (center + offset)
+			)
+			rings[i].addAll(diagonals)
+			// add spaces bordering previous ring
+			for (j in rings[i - 1]) {
+				if (j.first <= center) rings[i].add((j.first - GamePiece.blockSize) to j.second)
+				if (j.first >= center) rings[i].add((j.first + GamePiece.blockSize) to j.second)
+				if (j.second <= center) rings[i].add(j.first to (j.second - GamePiece.blockSize))
+				if (j.second >= center) rings[i].add(j.first to (j.second + GamePiece.blockSize))
+			}
+			// remove interior spaces
+			rings[i].removeIf {
+				(it.first in (diagonals[0].first + 1)..center && it.second in (diagonals[0].second + 1)..center) ||
+				(it.first in center until diagonals[1].first && it.second in (diagonals[1].second + 1)..center) ||
+				(it.first in center until diagonals[2].first && it.second in center until diagonals[2].second) ||
+				(it.first in (diagonals[3].first + 1)..center && it.second in center until diagonals[3].second)
+			}
+		}
+		// remove center coordinates
+		rings = rings.drop(1)
 	}
 }
