@@ -40,11 +40,21 @@ class GameFragment : Fragment(),
 	private var isPaused = false
 	private lateinit var speed: GameSpeed
 	private lateinit var rings: List<MutableSet<Pair<Int, Int>>>
+	private var currentScore = 0
+		set(value) {
+			field = value
+			binding.scoreLabel.text = value.toString()
+		}
 
 	private val pieces = ArrayDeque<GamePiece>()
 	private val nextQueue = ArrayDeque<GamePiece>()
 	private lateinit var planetBlock: BlockDrawable
 	private var holdPiece: GamePiece? = null
+
+	companion object {
+		private const val PIECE_PLACED_SCORE = 1_000
+		private const val RING_CLEARED_SCORE = 10_000
+	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -275,6 +285,7 @@ class GameFragment : Fragment(),
 	private fun movePiece() {
 		val piece = pieces.last()
 		if (!piece.direction.drop(piece)) {
+			currentScore += PIECE_PLACED_SCORE
 			// check for completed rings
 			clearRings()
 			addNextPiece()
@@ -343,7 +354,7 @@ class GameFragment : Fragment(),
 	}
 
 	private fun clearRings() {
-		rings.forEach { ring ->
+		rings.forEachIndexed { index, ring ->
 			if (GamePiece.occupiedSpaces.values.containsAll(ring)) {
 				ring.forEach {
 					val block = GamePiece.occupiedSpaces.inverse()[it]
@@ -353,6 +364,7 @@ class GameFragment : Fragment(),
 						blocks[blocks.indexOf(block)] = null
 					}
 				}
+				currentScore += RING_CLEARED_SCORE * (index + 1)
 				// move pieces to fill in cleared spaces
 				pieces.forEach { it.direction.drop(it) }
 			}
