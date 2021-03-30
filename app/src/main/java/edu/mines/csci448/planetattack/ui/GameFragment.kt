@@ -247,15 +247,7 @@ class GameFragment : Fragment(),
 		piece.y = y
 	}
 
-	private fun movePiece() {
-		val piece = pieces.last()
-		if (!piece.direction.drop(piece)) {
-			// check for completed rings
-			clearRings()
-			addNextPiece()
-		}
-
-		// adjust direction if reached other side
+	private fun resetPieceDirection(piece: GamePiece) {
 		piece.direction = when (piece.direction) {
 			PieceDirection.UP -> {
 				if (piece.y <= 0) PieceDirection.DOWN
@@ -274,6 +266,17 @@ class GameFragment : Fragment(),
 				else PieceDirection.RIGHT
 			}
 		}
+	}
+
+	private fun movePiece() {
+		val piece = pieces.last()
+		if (!piece.direction.drop(piece)) {
+			// check for completed rings
+			clearRings()
+			addNextPiece()
+		}
+		// adjust direction if reached other side
+		resetPieceDirection(piece)
 	}
 
 	private fun rotatePiece() {
@@ -379,7 +382,7 @@ class GameFragment : Fragment(),
 		while (piece.x in GamePiece.blockSize until canvasWidth - (GamePiece.blockSize * piece.shape.width) &&
 			piece.y in GamePiece.blockSize until canvasHeight - (GamePiece.blockSize * piece.shape.height) &&
 			piece.direction.drop(piece)) {
-			movePiece()
+			resetPieceDirection(piece)
 		}
 		movePiece()
 	}
