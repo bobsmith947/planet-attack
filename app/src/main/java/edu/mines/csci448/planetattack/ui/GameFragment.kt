@@ -38,11 +38,12 @@ class GameFragment : Fragment(),
 	}
 
 	private var isPaused = false
+	private lateinit var speed: GameSpeed
+	private lateinit var rings: List<MutableSet<Pair<Int, Int>>>
+
 	private val pieces = ArrayDeque<GamePiece>()
 	private val nextQueue = ArrayDeque<GamePiece>()
-	private lateinit var speed: GameSpeed
 	private lateinit var planetBlock: BlockDrawable
-	private lateinit var rings: List<MutableSet<Pair<Int, Int>>>
 	private var holdPiece: GamePiece? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,10 +64,11 @@ class GameFragment : Fragment(),
 		setButtonOnClickListeners()
 		resume()
 		binding.gameView.holder.addCallback(this)
-		// TODO make sure click doesn't register when game is paused
 		val detector = GestureDetectorCompat(requireContext(), this)
 		binding.gameView.setOnTouchListener { _, event ->
-			detector.onTouchEvent(event)
+			if (!isPaused) {
+				detector.onTouchEvent(event)
+			} else true
 		}
 		binding.holdImageView.setImageDrawable(null)
 		return binding.root
@@ -89,6 +91,7 @@ class GameFragment : Fragment(),
 	}
 
 	private fun pause() {
+		isPaused = true
 		binding.menuOverlay.visibility = View.VISIBLE
 		binding.menuButton.apply {
 			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_background)
@@ -102,6 +105,7 @@ class GameFragment : Fragment(),
 	}
 
 	private fun resume() {
+		isPaused = false
 		binding.menuOverlay.visibility = View.INVISIBLE
 		binding.menuButton.apply {
 			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_foreground)
