@@ -43,6 +43,7 @@ class GameFragment : Fragment(),
 	private lateinit var speed: GameSpeed
 	private lateinit var planetBlock: BlockDrawable
 	private lateinit var rings: List<MutableSet<Pair<Int, Int>>>
+	private var holdPiece: GamePiece? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -67,6 +68,7 @@ class GameFragment : Fragment(),
 		binding.gameView.setOnTouchListener { _, event ->
 			detector.onTouchEvent(event)
 		}
+		binding.holdImageView.setImageDrawable(null)
 		return binding.root
 	}
 
@@ -123,6 +125,10 @@ class GameFragment : Fragment(),
 
 		binding.quitButton.setOnClickListener {
 			findNavController().navigateUp()
+		}
+
+		binding.holdButton.setOnClickListener {
+			swapHoldPiece()
 		}
 	}
 
@@ -228,6 +234,19 @@ class GameFragment : Fragment(),
 		}
 	}
 
+	private fun resetPiecePosition(piece: GamePiece) {
+		val (x, y) = when (piece.direction) {
+			PieceDirection.UP -> arrayOf((canvasWidth / 2) - (GamePiece.blockSize / 2),
+				canvasHeight - (GamePiece.blockSize * piece.shape.height))
+			PieceDirection.DOWN -> arrayOf((canvasWidth / 2) - (GamePiece.blockSize / 2), 0)
+			PieceDirection.LEFT -> arrayOf(canvasWidth - (GamePiece.blockSize * piece.shape.width),
+				(canvasHeight / 2) - (GamePiece.blockSize / 2))
+			PieceDirection.RIGHT -> arrayOf(0, (canvasHeight / 2) - (GamePiece.blockSize / 2))
+		}
+		piece.x = x
+		piece.y = y
+	}
+
 	private fun movePiece() {
 		val piece = pieces.last()
 		if (!piece.direction.drop(piece)) {
@@ -260,6 +279,19 @@ class GameFragment : Fragment(),
 	private fun rotatePiece() {
 		val piece = pieces.last()
 		piece.shape.createLayout((piece.shape.rotation + PieceShape.ROTATION_90) % PieceShape.ROTATION_360)
+	}
+
+	private fun swapHoldPiece() {
+		val hold = holdPiece
+		holdPiece = pieces.removeLast()
+		holdPiece!!.blocks.forEach { GamePiece.occupiedSpaces.remove(it) }
+		resetPiecePosition(holdPiece!!)
+		if (hold != null) {
+			pieces.addLast(hold)
+		} else {
+			addNextPiece()
+		}
+		binding.holdImageView.setImageResource(holdPiece!!.shape.iconId)
 	}
 
 	private fun calculateRings() {
