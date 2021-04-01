@@ -23,4 +23,5 @@
 		Form a complete ring to clear blocks.
 	</string>
 	<string name="help_okay">Okay</string>
+	<string name="game_over_label">Game Over!</string>
 </resources>

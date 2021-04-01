@@ -31,8 +31,15 @@ class GameFragment : Fragment(),
 
 	private val pieceMover = object : Runnable {
 		override fun run() {
+			try {
+				drawPieces()
+			} catch (e: Exception) {
+				pause()
+				binding.resumeButton.visibility = View.GONE
+				binding.gameOverTextView.visibility = View.VISIBLE
+				return
+			}
 			movePiece()
-			drawPieces()
 			binding.gameView.postDelayed(this, speed.dropDelayMillis)
 		}
 	}
@@ -172,6 +179,8 @@ class GameFragment : Fragment(),
 			calculateRings()
 			nextQueue.addAll(generateSequence(this::generatePiece).take(3))
 			addNextPiece()
+			// ensure first piece is drawn immediately
+			movePiece()
 		}
 	}
 
@@ -189,7 +198,15 @@ class GameFragment : Fragment(),
 		// reset the canvas
 		canvas.drawColor(Color.BLACK)
 		planetBlock.draw(canvas)
-		pieces.forEach { it.drawBlocks(canvas) }
+		// draw previously placed pieces
+		pieces.dropLast(1).forEach { it.drawBlocks(canvas) }
+		// ensure there is space for the current piece
+		val piece = pieces.last()
+		if (piece.blocks.filterNotNull().any { !GamePiece.pieceContains(piece, it.x, it.y) }) {
+			// if there is no space for the piece, throw an exception to indicate the game is over
+			throw Exception()
+		}
+		piece.drawBlocks(canvas)
 		holder.unlockCanvasAndPost(canvas)
 	}
 

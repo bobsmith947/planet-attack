@@ -5,8 +5,10 @@ import android.graphics.drawable.BitmapDrawable
 
 class BlockDrawable(color: BlockColor, resources: Resources, val piece: GamePiece?) :
 	BitmapDrawable(resources, color.getBitmap(resources)) {
-	internal var x = 0
-	internal var y = 0
+	var x = 0
+		private set
+	var y = 0
+		private set
 
 	fun setBounds(x: Int, y: Int) {
 		super.setBounds(x, y, x + GamePiece.blockSize, y + GamePiece.blockSize)

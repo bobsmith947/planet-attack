@@ -172,6 +172,17 @@
 		tools:layout_editor_absoluteY="-50dp"
 		tools:visibility="invisible">
 
+		<TextView
+			android:id="@+id/game_over_text_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/game_over_label"
+			android:textAlignment="center"
+			android:textAppearance="@style/TextAppearance.AppCompat.Large"
+			android:textColor="@color/block_red"
+			android:textStyle="bold"
+			android:visibility="gone" />
+
 		<Button
 			android:id="@+id/resume_button"
 			android:layout_width="wrap_content"
