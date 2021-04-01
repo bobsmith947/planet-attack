@@ -16,6 +16,7 @@ import edu.mines.csci448.planetattack.GameSpeed
 import edu.mines.csci448.planetattack.R
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.*
+import kotlin.jvm.Throws
 import kotlin.reflect.full.createInstance
 
 class GameFragment : Fragment(),
@@ -31,6 +32,7 @@ class GameFragment : Fragment(),
 
 	private val pieceMover = object : Runnable {
 		override fun run() {
+			movePiece()
 			try {
 				drawPieces()
 			} catch (e: Exception) {
@@ -39,7 +41,6 @@ class GameFragment : Fragment(),
 				binding.gameOverTextView.visibility = View.VISIBLE
 				return
 			}
-			movePiece()
 			binding.gameView.postDelayed(this, speed.dropDelayMillis)
 		}
 	}
@@ -179,8 +180,6 @@ class GameFragment : Fragment(),
 			calculateRings()
 			nextQueue.addAll(generateSequence(this::generatePiece).take(3))
 			addNextPiece()
-			// ensure first piece is drawn immediately
-			movePiece()
 		}
 	}
 
@@ -193,6 +192,7 @@ class GameFragment : Fragment(),
 		pause()
 	}
 
+	@Throws(Exception::class)
 	private fun drawPieces() {
 		val canvas = holder.lockCanvas()
 		// reset the canvas
@@ -204,6 +204,7 @@ class GameFragment : Fragment(),
 		val piece = pieces.last()
 		if (piece.blocks.filterNotNull().any { !GamePiece.pieceContains(piece, it.x, it.y) }) {
 			// if there is no space for the piece, throw an exception to indicate the game is over
+			holder.unlockCanvasAndPost(canvas)
 			throw Exception()
 		}
 		piece.drawBlocks(canvas)
@@ -419,6 +420,13 @@ class GameFragment : Fragment(),
 			resetPieceDirection(piece)
 		}
 		movePiece()
+		try {
+			drawPieces()
+		} catch (e: Exception) {
+			pause()
+			binding.resumeButton.visibility = View.GONE
+			binding.gameOverTextView.visibility = View.VISIBLE
+		}
 	}
 
 	override fun onFling(

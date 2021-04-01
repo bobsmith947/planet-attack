@@ -14,6 +14,7 @@ class GamePiece(
 	init {
 		val color = BlockColor.values().random()
 		blocks = MutableList(4) { BlockDrawable(color, resources, this) }
+		shape.make(this)
 	}
 
 	companion object {
