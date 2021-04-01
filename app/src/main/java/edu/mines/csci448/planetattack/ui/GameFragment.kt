@@ -285,7 +285,7 @@ class GameFragment : Fragment(),
 	private fun movePiece() {
 		val piece = pieces.last()
 		if (!piece.direction.drop(piece)) {
-			currentScore += PIECE_PLACED_SCORE
+			currentScore += PIECE_PLACED_SCORE * (speed.ordinal + 1)
 			// check for completed rings
 			clearRings()
 			addNextPiece()
@@ -364,8 +364,9 @@ class GameFragment : Fragment(),
 						blocks[blocks.indexOf(block)] = null
 					}
 				}
-				currentScore += RING_CLEARED_SCORE * (index + 1)
+				currentScore += RING_CLEARED_SCORE * (index + 1) * (speed.ordinal + 1)
 				// move pieces to fill in cleared spaces
+				// TODO this doesn't work very well, need to find a better solution
 				pieces.forEach { it.direction.drop(it) }
 			}
 		}
