@@ -1,6 +1,5 @@
 package edu.mines.csci448.planetattack.graphics
 
-import edu.mines.csci448.planetattack.graphics.GamePiece.Companion.pieceContains
 import edu.mines.csci448.planetattack.graphics.GamePiece.Companion.blockSize
 
 enum class PieceDirection {
@@ -20,7 +19,7 @@ enum class PieceDirection {
 	abstract fun drop(piece: GamePiece): Boolean
 
 	fun moveUp(piece: GamePiece): Boolean {
-		return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x, it.y - blockSize) }) false
+		return if (!piece.blocks.filterNotNull().all { piece.contains(it.x, it.y - blockSize) }) false
 		else {
 			piece.y -= blockSize
 			piece.shape.make(piece)
@@ -29,7 +28,7 @@ enum class PieceDirection {
 	}
 
 	fun moveDown(piece: GamePiece): Boolean {
-		return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x, it.y + blockSize) }) false
+		return if (!piece.blocks.filterNotNull().all { piece.contains(it.x, it.y + blockSize) }) false
 		else {
 			piece.y += blockSize
 			piece.shape.make(piece)
@@ -38,7 +37,7 @@ enum class PieceDirection {
 	}
 
 	fun moveLeft(piece: GamePiece): Boolean {
-		return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x - blockSize, it.y) }) false
+		return if (!piece.blocks.filterNotNull().all { piece.contains(it.x - blockSize, it.y) }) false
 		else {
 			piece.x -= blockSize
 			piece.shape.make(piece)
@@ -47,7 +46,7 @@ enum class PieceDirection {
 	}
 
 	fun moveRight(piece: GamePiece): Boolean {
-		return if (!piece.blocks.filterNotNull().all { pieceContains(piece, it.x + blockSize, it.y) }) false
+		return if (!piece.blocks.filterNotNull().all { piece.contains(it.x + blockSize, it.y) }) false
 		else {
 			piece.x += blockSize
 			piece.shape.make(piece)

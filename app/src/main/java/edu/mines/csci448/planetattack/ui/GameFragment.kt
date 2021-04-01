@@ -202,7 +202,7 @@ class GameFragment : Fragment(),
 		pieces.dropLast(1).forEach { it.drawBlocks(canvas) }
 		// ensure there is space for the current piece
 		val piece = pieces.last()
-		if (piece.blocks.filterNotNull().any { !GamePiece.pieceContains(piece, it.x, it.y) }) {
+		if (piece.blocks.filterNotNull().any { !piece.contains(it.x, it.y) }) {
 			// if there is no space for the piece, throw an exception to indicate the game is over
 			holder.unlockCanvasAndPost(canvas)
 			throw Exception()
@@ -385,7 +385,10 @@ class GameFragment : Fragment(),
 				currentScore += RING_CLEARED_SCORE * (index + 1) * (speed.ordinal + 1)
 				// move pieces to fill in cleared spaces
 				// TODO this doesn't work very well, need to find a better solution
-				pieces.forEach { it.direction.drop(it) }
+				pieces.forEach {
+					if (it.blocks.filterNotNull().isEmpty()) pieces.remove(it)
+					else it.direction.drop(it)
+				}
 			}
 		}
 	}
@@ -419,7 +422,6 @@ class GameFragment : Fragment(),
 			piece.direction.drop(piece)) {
 			resetPieceDirection(piece)
 		}
-		movePiece()
 		try {
 			drawPieces()
 		} catch (e: Exception) {
@@ -427,6 +429,7 @@ class GameFragment : Fragment(),
 			binding.resumeButton.visibility = View.GONE
 			binding.gameOverTextView.visibility = View.VISIBLE
 		}
+		movePiece()
 	}
 
 	override fun onFling(
