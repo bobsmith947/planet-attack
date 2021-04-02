@@ -5,10 +5,22 @@ import android.graphics.Canvas
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 
+/**
+ * This class contains the necessary information for the game to draw a piece.
+ * @constructor Creates a piece at its starting position and orientation.
+ * @property x the x coordinate of the first block in the piece
+ * @property y the y coordinate of the first block in the piece
+ * @property shape an instance of a subclass of [PieceShape]
+ * @property direction the direction in which the piece initially falls
+ */
 class GamePiece(
 	var x: Int, var y: Int, val shape: PieceShape,
 	var direction: PieceDirection, resources: Resources
 ) {
+	/**
+	 * A length 4 list of the blocks contained by the piece.
+	 * A null entry indicates that the block in that position has been cleared.
+	 */
 	val blocks: MutableList<BlockDrawable?>
 
 	init {
@@ -18,10 +30,22 @@ class GamePiece(
 	}
 
 	companion object {
+		/**
+		 * The size of each block in terms of coordinate units.
+		 */
 		const val blockSize = 50
+
+		/**
+		 * A bi-directional map between blocks and coordinate pairs.
+		 * This requires that no two blocks occupy the same space.
+		 */
 		val occupiedSpaces: BiMap<BlockDrawable, Pair<Int, Int>> = HashBiMap.create()
 	}
 
+	/**
+	 * Draws the blocks contained by the piece on the screen.
+	 * @param canvas the canvas on which to draw
+	 */
 	fun drawBlocks(canvas: Canvas) {
 		blocks.forEach {
 			if (it != null) {
@@ -33,6 +57,8 @@ class GamePiece(
 
 	/**
 	 * Check if the block at the given coordinates corresponds to this piece (or no piece).
+	 * @param x the x coordinate to check
+	 * @param y the y coordinate to check
 	 * @return whether the coordinates are available to move to.
  	 */
 	fun contains(x: Int, y: Int): Boolean {

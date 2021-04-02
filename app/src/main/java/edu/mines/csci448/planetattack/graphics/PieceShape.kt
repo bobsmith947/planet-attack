@@ -4,6 +4,12 @@ import androidx.annotation.DrawableRes
 import edu.mines.csci448.planetattack.R
 import kotlin.jvm.Throws
 
+/**
+ * This class represents the shape of a piece.
+ * As this is a sealed class, all possible shapes are known at compile time.
+ * @constructor Creates a type of shape.
+ * @property iconId a [DrawableRes] that can be used to preview the shape
+ */
 sealed class PieceShape(@DrawableRes val iconId: Int) {
 	/**
 	 * The width in terms of block units.
@@ -36,9 +42,24 @@ sealed class PieceShape(@DrawableRes val iconId: Int) {
 	 */
 	private var previousRotation = ROTATION_360
 
+	/**
+	 * Create the layout of the shape according to the rotation.
+	 * This updates the current and previous rotations of the shape.
+	 * @param rotation the orientation in which to create the layout
+	 * @throws IllegalArgumentException if the rotation is not 0, 90, 180, or 270 degrees
+	 */
 	@Throws(IllegalArgumentException::class)
 	abstract fun createLayout(rotation: Int)
 
+	/**
+	 * Sets the bounds of each block in the piece according to the layout.
+	 * The layout must have previously been initialized by a call to [createLayout].
+	 * If the attempted rotation overlaps with another piece, a wall kick will be attempted.
+	 * In the case of a piece falling up or down, this will try to move one space to the left or right.
+	 * In the case of a piece falling to the left or right, this will try to move one space up or down.
+	 * If both of these attempts fail, the piece will retain its original rotation.
+	 * @param piece the piece to make the shape for
+	 */
 	fun make(piece: GamePiece) {
 		var blockNum = 0
 		for (i in 0 until height) {
