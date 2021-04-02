@@ -21,6 +21,7 @@ import kotlin.reflect.full.createInstance
 
 class GameFragment : Fragment(),
 	BackPressListener, SurfaceHolder.Callback, GestureDetector.OnGestureListener {
+	// region UI Properties
 	private var _binding: FragmentGameBinding? = null
 	private val binding get() = _binding!!
 
@@ -29,6 +30,7 @@ class GameFragment : Fragment(),
 	private var canvasWidth = 0
 	private var canvasHeight = 0
 	private var canvasMargin = 0
+	// endregion
 
 	private val pieceMover = object : Runnable {
 		override fun run() {
@@ -45,6 +47,7 @@ class GameFragment : Fragment(),
 		}
 	}
 
+	// region Gameplay Properties
 	private var isPaused = false
 	private lateinit var speed: GameSpeed
 	private lateinit var rings: List<MutableSet<Pair<Int, Int>>>
@@ -58,12 +61,14 @@ class GameFragment : Fragment(),
 	private val nextQueue = ArrayDeque<GamePiece>()
 	private lateinit var planetBlock: BlockDrawable
 	private var holdPiece: GamePiece? = null
+	// endregion
 
 	companion object {
 		private const val PIECE_PLACED_SCORE = 1_000
 		private const val RING_CLEARED_SCORE = 10_000
 	}
 
+	// region Lifecycle Callbacks
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
@@ -107,7 +112,9 @@ class GameFragment : Fragment(),
 	override fun onBackPressed() {
 		pause()
 	}
+	// endregion
 
+	// region UI methods
 	private fun pause() {
 		isPaused = true
 		binding.menuOverlay.visibility = View.VISIBLE
@@ -153,7 +160,9 @@ class GameFragment : Fragment(),
 			swapHoldPiece()
 		}
 	}
+	// endregion
 
+	// region SurfaceHolder Callbacks
 	override fun surfaceCreated(holder: SurfaceHolder) {
 		_holder = holder
 		// when first initializing
@@ -191,7 +200,9 @@ class GameFragment : Fragment(),
 		_holder = null
 		pause()
 	}
+	// endregion
 
+	//region Gameplay Methods
 	@Throws(Exception::class)
 	private fun drawPieces() {
 		val canvas = holder.lockCanvas()
@@ -391,7 +402,9 @@ class GameFragment : Fragment(),
 			}
 		}
 	}
+	// endregion
 
+	// region GestureDetector Callbacks
 	override fun onDown(e: MotionEvent?): Boolean {
 		return true
 	}
@@ -450,4 +463,5 @@ class GameFragment : Fragment(),
 		}
 		return true
 	}
+	// endregion
 }

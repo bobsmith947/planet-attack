@@ -11,7 +11,7 @@ import com.google.common.collect.HashBiMap
  * @property x the x coordinate of the first block in the piece
  * @property y the y coordinate of the first block in the piece
  * @property shape an instance of a subclass of [PieceShape]
- * @property direction the direction in which the piece initially falls
+ * @property direction the direction in which the piece falls
  */
 class GamePiece(
 	var x: Int, var y: Int, val shape: PieceShape,
