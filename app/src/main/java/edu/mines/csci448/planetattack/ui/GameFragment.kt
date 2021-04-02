@@ -314,7 +314,7 @@ class GameFragment : Fragment(),
 
 	private fun rotatePiece() {
 		val piece = pieces.last()
-		piece.shape.createLayout((piece.shape.rotation + PieceShape.ROTATION_90) % PieceShape.ROTATION_360)
+		piece.shape.createLayout((piece.shape.currentRotation + PieceShape.ROTATION_90) % PieceShape.ROTATION_360)
 	}
 
 	private fun swapHoldPiece() {
@@ -383,12 +383,11 @@ class GameFragment : Fragment(),
 					}
 				}
 				currentScore += RING_CLEARED_SCORE * (index + 1) * (speed.ordinal + 1)
-				// move pieces to fill in cleared spaces
+				// remove empty pieces
+				pieces.removeIf { it.blocks.filterNotNull().isEmpty() }
+				// move remaining pieces to fill in cleared spaces
 				// TODO this doesn't work very well, need to find a better solution
-				pieces.forEach {
-					if (it.blocks.filterNotNull().isEmpty()) pieces.remove(it)
-					else it.direction.drop(it)
-				}
+				pieces.forEach { it.direction.drop(it) }
 			}
 		}
 	}

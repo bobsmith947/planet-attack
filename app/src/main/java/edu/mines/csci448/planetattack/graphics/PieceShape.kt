@@ -5,30 +5,69 @@ import edu.mines.csci448.planetattack.R
 import kotlin.jvm.Throws
 
 sealed class PieceShape(@DrawableRes val iconId: Int) {
-	// the width and height of the shape in terms of block units
+	/**
+	 * The width in terms of block units.
+	 */
 	val width get() = layout[0].size
+
+	/**
+	 * The height in terms of block units.
+	 */
 	val height get() = layout.size
 
-	// the layout of blocks in the piece
-	// true represents the presence of the block
-	// false represents no block
+	/**
+	 * The layout of the blocks in the piece.
+	 * True represents the presence of a block.
+	 * False represents an empty space.
+ 	 */
 	protected lateinit var layout: Array<BooleanArray>
-	var rotation = ROTATION_360
+
+	/**
+	 * The current rotation of the block in degrees.
+	 */
+	var currentRotation = ROTATION_360
+		protected set(value) {
+			previousRotation = field
+			field = value
+		}
+
+	/**
+	 * The previous rotation of the block in degrees.
+	 */
+	private var previousRotation = ROTATION_360
 
 	@Throws(IllegalArgumentException::class)
 	abstract fun createLayout(rotation: Int)
 
-	// TODO check for piece collisions on rotation
-	fun make(piece: GamePiece): Boolean {
+	fun make(piece: GamePiece) {
 		var blockNum = 0
 		for (i in 0 until height) {
 			for (j in 0 until width) {
-				if (layout[i][j])
-					piece.blocks[blockNum++]?.setBounds(piece.x + GamePiece.blockSize * j,
-						piece.y + GamePiece.blockSize * i)
+				if (layout[i][j]) {
+					piece.blocks[blockNum++]?.setBounds(
+						piece.x + GamePiece.blockSize * j,
+						piece.y + GamePiece.blockSize * i
+					)
+				}
 			}
 		}
-		return true
+		// check if there is space for the rotated piece
+		if (previousRotation != ROTATION_360 && piece.blocks.filterNotNull().any { !piece.contains(it.x, it.y) }) {
+			// attempt to perform wall kick
+			when (piece.direction) {
+				PieceDirection.UP, PieceDirection.DOWN -> {
+					if (piece.direction.moveRight(piece)) return
+					else if (piece.direction.moveLeft(piece)) return
+				}
+				PieceDirection.LEFT, PieceDirection.RIGHT -> {
+					if (piece.direction.moveDown(piece)) return
+					else if (piece.direction.moveUp(piece)) return
+				}
+			}
+			// revert to previous rotation if wall kick fails
+			createLayout(previousRotation)
+			make(piece)
+		}
 	}
 
 	companion object {
@@ -50,7 +89,7 @@ class ShapeI : PieceShape(R.drawable.block_icon_i) {
 	private val horizontal = arrayOf(booleanArrayOf(true, true, true, true))
 
 	override fun createLayout(rotation: Int) {
-		this.rotation = rotation
+		this.currentRotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> vertical
 			ROTATION_90 -> horizontal
@@ -82,7 +121,7 @@ class ShapeJ : PieceShape(R.drawable.block_icon_j) {
 	)
 
 	override fun createLayout(rotation: Int) {
-		this.rotation = rotation
+		this.currentRotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> r0
 			ROTATION_90 -> r90
@@ -114,7 +153,7 @@ class ShapeL : PieceShape(R.drawable.block_icon_l) {
 	)
 
 	override fun createLayout(rotation: Int) {
-		this.rotation = rotation
+		this.currentRotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> r0
 			ROTATION_90 -> r90
@@ -127,7 +166,7 @@ class ShapeL : PieceShape(R.drawable.block_icon_l) {
 
 class ShapeO : PieceShape(R.drawable.block_icon_o) {
 	override fun createLayout(rotation: Int) {
-		this.rotation = rotation
+		this.currentRotation = rotation
 		layout = arrayOf(
 			booleanArrayOf(true, true),
 			booleanArrayOf(true, true)
@@ -156,7 +195,7 @@ class ShapeS : PieceShape(R.drawable.block_icon_s) {
 	)
 
 	override fun createLayout(rotation: Int) {
-		this.rotation = rotation
+		this.currentRotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> r0
 			ROTATION_90 -> r90
@@ -188,7 +227,7 @@ class ShapeT : PieceShape(R.drawable.block_icon_t) {
 	)
 
 	override fun createLayout(rotation: Int) {
-		this.rotation = rotation
+		this.currentRotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> r0
 			ROTATION_90 -> r90
@@ -220,7 +259,7 @@ class ShapeZ : PieceShape(R.drawable.block_icon_z) {
 	)
 
 	override fun createLayout(rotation: Int) {
-		this.rotation = rotation
+		this.currentRotation = rotation
 		layout = when (rotation) {
 			ROTATION_0 -> r0
 			ROTATION_90 -> r90
