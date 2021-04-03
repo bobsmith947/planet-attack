@@ -30,6 +30,9 @@ class GameFragment : Fragment(),
 	private var canvasWidth = 0
 	private var canvasHeight = 0
 	private var canvasMargin = 0
+
+	private var showNext = true
+	private var showHold = false
 	// endregion
 
 	private val pieceMover = object : Runnable {
@@ -78,6 +81,8 @@ class GameFragment : Fragment(),
 			"3" -> GameSpeed.FAST
 			else -> throw IllegalStateException()
 		}
+		showNext = prefs.getBoolean("next", showNext)
+		showHold = prefs.getBoolean("hold", showHold)
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -86,6 +91,7 @@ class GameFragment : Fragment(),
 		_binding = FragmentGameBinding.inflate(inflater, container, false)
 		setButtonOnClickListeners()
 		resume()
+
 		binding.gameView.holder.addCallback(this)
 		val detector = GestureDetectorCompat(requireContext(), this)
 		binding.gameView.setOnTouchListener { _, event ->
@@ -93,7 +99,18 @@ class GameFragment : Fragment(),
 				detector.onTouchEvent(event)
 			} else true
 		}
+
 		binding.holdImageView.setImageDrawable(null)
+		if (!showNext) {
+			binding.nextLabel.visibility = View.INVISIBLE
+			binding.firstNextImageView.visibility = View.INVISIBLE
+			binding.secondNextImageView.visibility = View.INVISIBLE
+			binding.thirdNextImageView.visibility = View.INVISIBLE
+		}
+		if (!showHold) {
+			binding.holdButton.visibility = View.INVISIBLE
+		}
+
 		return binding.root
 	}
 
