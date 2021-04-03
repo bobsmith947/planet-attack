@@ -443,13 +443,13 @@ class GameFragment : Fragment(),
 				pieces.removeIf { it.blocks.filterNotNull().isEmpty() }
 				// fill in cleared spaces
 				pieces.forEach { piece ->
-					// update piece coordinates
-					val (x, y) = piece.blocks.filterNotNull()[0]; piece.x = x; piece.y = y
 					piece.blocks.filterNotNull().forEach {
 						if (it.x < xmin) it.moveRight()
 						else if (it.x > xmax) it.moveLeft()
 						if (it.y < ymin) it.moveDown()
 						else if (it.y > ymax) it.moveUp()
+						// update piece coordinates
+						val (x, y) = piece.blocks.filterNotNull()[0]; piece.x = x; piece.y = y
 					}
 				}
 			}

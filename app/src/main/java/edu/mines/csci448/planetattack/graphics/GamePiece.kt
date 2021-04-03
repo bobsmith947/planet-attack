@@ -7,6 +7,7 @@ import android.os.Parcelable
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import edu.mines.csci448.planetattack.ShapeParceler
+import edu.mines.csci448.planetattack.ShapeParceler.write
 import kotlinx.parcelize.*
 
 /**
@@ -18,7 +19,6 @@ import kotlinx.parcelize.*
  * @property direction the direction in which the piece falls
  */
 @Parcelize
-@TypeParceler<PieceShape, ShapeParceler>
 class GamePiece(var x: Int, var y: Int, val shape: PieceShape, var direction: PieceDirection) : Parcelable {
 	/**
 	 * A length 4 list of the blocks contained by the piece.
@@ -33,7 +33,7 @@ class GamePiece(var x: Int, var y: Int, val shape: PieceShape, var direction: Pi
 		shape.make(this)
 	}
 
-	companion object {
+	companion object : Parceler<GamePiece> {
 		/**
 		 * The size of each block in terms of coordinate units.
 		 */
@@ -45,29 +45,31 @@ class GamePiece(var x: Int, var y: Int, val shape: PieceShape, var direction: Pi
 		 */
 		val occupiedSpaces: BiMap<BlockDrawable, Pair<Int, Int>> = HashBiMap.create()
 
-		object PieceParceler : Parceler<GamePiece> {
-			override fun create(parcel: Parcel): GamePiece {
-				val piece = parcel.readParcelable<GamePiece>(GamePiece::class.java.classLoader)
-				val blocks = booleanArrayOf(false, false, false, false)
-				parcel.readBooleanArray(blocks)
-				for (i in 0 until 4) {
-					if (!blocks[i]) {
-						piece!!.blocks[i] = null
-					}
+		override fun create(parcel: Parcel): GamePiece {
+			val piece = GamePiece(parcel.readInt(), parcel.readInt(),
+				ShapeParceler.create(parcel), parcel.readSerializable() as PieceDirection)
+			val blocks = BooleanArray(4)
+			parcel.readBooleanArray(blocks)
+			for (i in 0 until 4) {
+				if (!blocks[i]) {
+					piece.blocks[i] = null
+				} else {
+					piece.blocks[i]!!.setBounds(parcel.readInt(), parcel.readInt())
 				}
-				piece!!.shape.make(piece)
-				return piece
 			}
+			return piece
+		}
 
-			override fun GamePiece.write(parcel: Parcel, flags: Int) {
-				parcel.writeParcelable(this, flags)
-				val blocks = booleanArrayOf(false, false, false, false)
-				for (i in 0 until 4) {
-					if (this.blocks[i] != null) {
-						blocks[i] = true
-					}
+		override fun GamePiece.write(parcel: Parcel, flags: Int) {
+			parcel.writeInt(x); parcel.writeInt(y)
+			shape.write(parcel, flags); parcel.writeSerializable(direction)
+			val blocks = BooleanArray(4) { this.blocks[it] != null }
+			parcel.writeBooleanArray(blocks)
+			for (i in 0 until 4) {
+				if (blocks[i]) {
+					parcel.writeInt(this.blocks[i]!!.x)
+					parcel.writeInt(this.blocks[i]!!.y)
 				}
-				parcel.writeBooleanArray(blocks)
 			}
 		}
 
