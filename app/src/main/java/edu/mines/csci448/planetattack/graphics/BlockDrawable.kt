@@ -2,6 +2,7 @@ package edu.mines.csci448.planetattack.graphics
 
 import android.content.res.Resources
 import android.graphics.drawable.BitmapDrawable
+import edu.mines.csci448.planetattack.graphics.GamePiece.Companion.blockSize
 
 /**
  * This class is the component which makes up a piece.
@@ -30,8 +31,32 @@ class BlockDrawable(color: BlockColor, resources: Resources, val piece: GamePiec
 	 * @param y the top-left y position
 	 */
 	fun setBounds(x: Int, y: Int) {
-		super.setBounds(x, y, x + GamePiece.blockSize, y + GamePiece.blockSize)
+		super.setBounds(x, y, x + blockSize, y + blockSize)
 		this.x = x
 		this.y = y
+	}
+
+	operator fun component1(): Int {
+		return x
+	}
+
+	operator fun component2(): Int {
+		return y
+	}
+
+	fun moveUp() {
+		setBounds(x, y - blockSize)
+	}
+
+	fun moveDown() {
+		setBounds(x, y + blockSize)
+	}
+
+	fun moveLeft() {
+		setBounds(x - blockSize, y)
+	}
+
+	fun moveRight() {
+		setBounds(x + blockSize, y)
 	}
 }

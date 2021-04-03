@@ -385,20 +385,32 @@ class GameFragment : Fragment(),
 	private fun clearRings() {
 		rings.forEachIndexed { index, ring ->
 			if (GamePiece.occupiedSpaces.values.containsAll(ring)) {
+				// determine ring bounds
+				val (xmin, xmax, ymin, ymax) = with(ring) { arrayOf(
+					minOf { it.first }, maxOf { it.first },
+					minOf { it.second }, maxOf { it.second }
+				) }
 				ring.forEach {
 					val block = GamePiece.occupiedSpaces.inverse()[it]
-					if (block != null) {
-						GamePiece.occupiedSpaces.remove(block)
-						val blocks = block.piece!!.blocks
-						blocks[blocks.indexOf(block)] = null
-					}
+					GamePiece.occupiedSpaces.remove(block)
+					val blocks = block!!.piece!!.blocks
+					blocks[blocks.indexOf(block)] = null
 				}
 				currentScore += RING_CLEARED_SCORE * (index + 1) * (speed.ordinal + 1)
 				// remove empty pieces
 				pieces.removeIf { it.blocks.filterNotNull().isEmpty() }
-				// move remaining pieces to fill in cleared spaces
-				// TODO this doesn't work very well, need to find a better solution
-				pieces.forEach { it.direction.drop(it) }
+				// fill in cleared spaces
+				pieces.forEach { piece ->
+					// update piece coordinates
+					// shouldn't be necessary but the code is here just in case
+					//val (x, y) = piece.blocks.filterNotNull()[0]; piece.x = x; piece.y = y
+					piece.blocks.filterNotNull().forEach {
+						if (it.x < xmin) it.moveRight()
+						else if (it.x > xmax) it.moveLeft()
+						if (it.y < ymin) it.moveDown()
+						else if (it.y > ymax) it.moveUp()
+					}
+				}
 			}
 		}
 	}
