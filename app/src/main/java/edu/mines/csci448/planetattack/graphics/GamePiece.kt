@@ -2,8 +2,12 @@ package edu.mines.csci448.planetattack.graphics
 
 import android.content.res.Resources
 import android.graphics.Canvas
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
+import edu.mines.csci448.planetattack.ShapeParceler
+import kotlinx.parcelize.*
 
 /**
  * This class contains the necessary information for the game to draw a piece.
@@ -13,14 +17,14 @@ import com.google.common.collect.HashBiMap
  * @property shape an instance of a subclass of [PieceShape]
  * @property direction the direction in which the piece falls
  */
-class GamePiece(
-	var x: Int, var y: Int, val shape: PieceShape,
-	var direction: PieceDirection, resources: Resources
-) {
+@Parcelize
+@TypeParceler<PieceShape, ShapeParceler>
+class GamePiece(var x: Int, var y: Int, val shape: PieceShape, var direction: PieceDirection) : Parcelable {
 	/**
 	 * A length 4 list of the blocks contained by the piece.
 	 * A null entry indicates that the block in that position has been cleared.
 	 */
+	@IgnoredOnParcel
 	val blocks: MutableList<BlockDrawable?>
 
 	init {
@@ -40,6 +44,34 @@ class GamePiece(
 		 * This requires that no two blocks occupy the same space.
 		 */
 		val occupiedSpaces: BiMap<BlockDrawable, Pair<Int, Int>> = HashBiMap.create()
+
+		object PieceParceler : Parceler<GamePiece> {
+			override fun create(parcel: Parcel): GamePiece {
+				val piece = parcel.readParcelable<GamePiece>(GamePiece::class.java.classLoader)
+				val blocks = booleanArrayOf(false, false, false, false)
+				parcel.readBooleanArray(blocks)
+				for (i in 0 until 4) {
+					if (!blocks[i]) {
+						piece!!.blocks[i] = null
+					}
+				}
+				piece!!.shape.make(piece)
+				return piece
+			}
+
+			override fun GamePiece.write(parcel: Parcel, flags: Int) {
+				parcel.writeParcelable(this, flags)
+				val blocks = booleanArrayOf(false, false, false, false)
+				for (i in 0 until 4) {
+					if (this.blocks[i] != null) {
+						blocks[i] = true
+					}
+				}
+				parcel.writeBooleanArray(blocks)
+			}
+		}
+
+		lateinit var resources: Resources
 	}
 
 	/**

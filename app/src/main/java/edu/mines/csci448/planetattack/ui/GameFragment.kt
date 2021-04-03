@@ -69,11 +69,17 @@ class GameFragment : Fragment(),
 	companion object {
 		private const val PIECE_PLACED_SCORE = 1_000
 		private const val RING_CLEARED_SCORE = 10_000
+		private const val PIECES_KEY = "pieces"
+		private const val NEXT_KEY = "nextQueue"
+		private const val HOLD_KEY = "holdPiece"
+		private const val SCORE_KEY = "currentScore"
 	}
 
 	// region Lifecycle Callbacks
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
+		GamePiece.resources = resources
+
 		val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
 		speed = when (prefs.getString("speed", "")) {
 			"1" -> GameSpeed.SLOW
@@ -83,6 +89,12 @@ class GameFragment : Fragment(),
 		}
 		showNext = prefs.getBoolean("next", showNext)
 		showHold = prefs.getBoolean("hold", showHold)
+
+		if (savedInstanceState != null) {
+			savedInstanceState.getParcelableArrayList<GamePiece>(PIECES_KEY)?.let { pieces.addAll(it) }
+			savedInstanceState.getParcelableArrayList<GamePiece>(NEXT_KEY)?.let { nextQueue.addAll(it) }
+			holdPiece = savedInstanceState.getParcelable(HOLD_KEY)
+		}
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -90,7 +102,13 @@ class GameFragment : Fragment(),
 		(requireActivity() as AppCompatActivity).supportActionBar?.hide()
 		_binding = FragmentGameBinding.inflate(inflater, container, false)
 		setButtonOnClickListeners()
-		resume()
+
+		if (savedInstanceState == null) {
+			resume()
+		} else {
+			pause()
+			currentScore = savedInstanceState.getInt(SCORE_KEY)
+		}
 
 		binding.gameView.holder.addCallback(this)
 		val detector = GestureDetectorCompat(requireContext(), this)
@@ -128,6 +146,14 @@ class GameFragment : Fragment(),
 
 	override fun onBackPressed() {
 		pause()
+	}
+
+	override fun onSaveInstanceState(outState: Bundle) {
+		super.onSaveInstanceState(outState)
+		outState.putParcelableArrayList(PIECES_KEY, ArrayList(pieces))
+		outState.putParcelableArrayList(NEXT_KEY, ArrayList(nextQueue))
+		outState.putParcelable(HOLD_KEY, holdPiece)
+		outState.putInt(SCORE_KEY, currentScore)
 	}
 	// endregion
 
@@ -204,8 +230,11 @@ class GameFragment : Fragment(),
 			GamePiece.occupiedSpaces[planetBlock] = x to y
 
 			calculateRings()
-			nextQueue.addAll(generateSequence(this::generatePiece).take(3))
-			addNextPiece()
+			// when not restoring from saved instance state
+			if (!isPaused) {
+				nextQueue.addAll(generateSequence(this::generatePiece).take(3))
+				addNextPiece()
+			}
 		}
 	}
 
@@ -257,8 +286,7 @@ class GameFragment : Fragment(),
 					(canvasWidth / 2) - (GamePiece.blockSize / 2),
 					canvasHeight - (GamePiece.blockSize * shape.height),
 					shape,
-					direction,
-					resources
+					direction
 				)
 			}
 			PieceDirection.DOWN -> {
@@ -267,8 +295,7 @@ class GameFragment : Fragment(),
 					(canvasWidth / 2) - (GamePiece.blockSize / 2),
 					0,
 					shape,
-					direction,
-					resources
+					direction
 				)
 			}
 			PieceDirection.LEFT -> {
@@ -277,8 +304,7 @@ class GameFragment : Fragment(),
 					canvasWidth - (GamePiece.blockSize * shape.width),
 					(canvasHeight / 2) - (GamePiece.blockSize / 2),
 					shape,
-					direction,
-					resources
+					direction
 				)
 			}
 			PieceDirection.RIGHT -> {
@@ -287,8 +313,7 @@ class GameFragment : Fragment(),
 					0,
 					(canvasHeight / 2) - (GamePiece.blockSize / 2),
 					shape,
-					direction,
-					resources
+					direction
 				)
 			}
 		}
@@ -419,8 +444,7 @@ class GameFragment : Fragment(),
 				// fill in cleared spaces
 				pieces.forEach { piece ->
 					// update piece coordinates
-					// shouldn't be necessary but the code is here just in case
-					//val (x, y) = piece.blocks.filterNotNull()[0]; piece.x = x; piece.y = y
+					val (x, y) = piece.blocks.filterNotNull()[0]; piece.x = x; piece.y = y
 					piece.blocks.filterNotNull().forEach {
 						if (it.x < xmin) it.moveRight()
 						else if (it.x > xmax) it.moveLeft()
