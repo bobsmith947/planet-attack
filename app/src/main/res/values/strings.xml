@@ -18,12 +18,12 @@
 	<string name="resume_label">Resume</string>
 	<string name="quit_label">Quit</string>
 	<string name="help_text">
-		Drag to move piece, tap to rotate.
+		Swipe to move piece, tap to rotate.
 		Press and hold to drop piece.
-		Pieces will change directions if they reach the other side of the screen.
-		The hold button allows you to swap out the current piece.
+		Pieces will reverse direction if they reach the other side of the screen.
+		The hold button swaps out the current piece (if enabled in the settings).
 		Form a complete ring to clear blocks.
-		The game will end if your stack reaches the edge of the screen.
+		The game will end if the stack reaches the edge of the screen.
 	</string>
 	<string name="help_okay">Okay</string>
 	<string name="game_over_label">Game Over!</string>
