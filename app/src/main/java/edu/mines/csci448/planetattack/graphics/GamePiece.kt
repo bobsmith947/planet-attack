@@ -28,7 +28,7 @@ class GamePiece(var x: Int, var y: Int, val shape: PieceShape, var direction: Pi
 	val blocks: MutableList<BlockDrawable?>
 
 	init {
-		val color = BlockColor.values().random()
+		val color = shape.color
 		blocks = MutableList(4) { BlockDrawable(color, resources, this) }
 		shape.make(this)
 	}

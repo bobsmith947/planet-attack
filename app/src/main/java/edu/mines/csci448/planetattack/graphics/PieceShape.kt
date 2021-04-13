@@ -43,6 +43,11 @@ sealed class PieceShape(@DrawableRes val iconId: Int) {
 	private var previousRotation = ROTATION_360
 
 	/**
+	 * The color for the block shape
+	 */
+	abstract val color: BlockColor
+
+	/**
 	 * Create the layout of the shape according to the rotation.
 	 * This updates the current and previous rotations of the shape.
 	 * @param rotation the orientation in which to create the layout
@@ -109,6 +114,8 @@ class ShapeI : PieceShape(R.drawable.block_icon_i) {
 	)
 	private val horizontal = arrayOf(booleanArrayOf(true, true, true, true))
 
+	override val color = BlockColor.CYAN
+
 	override fun createLayout(rotation: Int) {
 		this.currentRotation = rotation
 		layout = when (rotation) {
@@ -140,6 +147,8 @@ class ShapeJ : PieceShape(R.drawable.block_icon_j) {
 		booleanArrayOf(true, true, true),
 		booleanArrayOf(false, false, true)
 	)
+
+	override val color = BlockColor.BLUE
 
 	override fun createLayout(rotation: Int) {
 		this.currentRotation = rotation
@@ -173,6 +182,8 @@ class ShapeL : PieceShape(R.drawable.block_icon_l) {
 		booleanArrayOf(true, true, true)
 	)
 
+	override val color = BlockColor.ORANGE
+
 	override fun createLayout(rotation: Int) {
 		this.currentRotation = rotation
 		layout = when (rotation) {
@@ -186,6 +197,8 @@ class ShapeL : PieceShape(R.drawable.block_icon_l) {
 }
 
 class ShapeO : PieceShape(R.drawable.block_icon_o) {
+	override val color = BlockColor.YELLOW
+
 	override fun createLayout(rotation: Int) {
 		this.currentRotation = rotation
 		layout = arrayOf(
@@ -214,6 +227,8 @@ class ShapeS : PieceShape(R.drawable.block_icon_s) {
 		booleanArrayOf(false, true, true),
 		booleanArrayOf(true, true, false)
 	)
+
+	override val color = BlockColor.GREEN
 
 	override fun createLayout(rotation: Int) {
 		this.currentRotation = rotation
@@ -247,6 +262,8 @@ class ShapeT : PieceShape(R.drawable.block_icon_t) {
 		booleanArrayOf(true, true, true)
 	)
 
+	override val color = BlockColor.MAGENTA
+
 	override fun createLayout(rotation: Int) {
 		this.currentRotation = rotation
 		layout = when (rotation) {
@@ -278,6 +295,8 @@ class ShapeZ : PieceShape(R.drawable.block_icon_z) {
 		booleanArrayOf(true, true, false),
 		booleanArrayOf(false, true, true)
 	)
+
+	override val color = BlockColor.RED
 
 	override fun createLayout(rotation: Int) {
 		this.currentRotation = rotation

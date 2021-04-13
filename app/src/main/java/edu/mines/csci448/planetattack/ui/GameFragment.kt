@@ -3,6 +3,7 @@ package edu.mines.csci448.planetattack.ui
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,11 @@ class GameFragment : Fragment(),
 	private var canvasHeight = 0
 	private var canvasMargin = 0
 
+	private var xOffset = 0.0
+	private var yOffset = 0.0
+
+	private val minimumOffset = 60.0
+
 	private var showNext = true
 	private var showHold = false
 	// endregion
@@ -41,9 +47,7 @@ class GameFragment : Fragment(),
 			try {
 				drawPieces()
 			} catch (e: Exception) {
-				pause()
-				binding.resumeButton.visibility = View.GONE
-				binding.gameOverTextView.visibility = View.VISIBLE
+				endGame()
 				return
 			}
 			binding.gameView.postDelayed(this, speed.dropDelayMillis)
@@ -268,6 +272,14 @@ class GameFragment : Fragment(),
 		holder.unlockCanvasAndPost(canvas)
 	}
 
+	private fun tryDrawPieces() {
+		try {
+			drawPieces()
+		} catch (e: Exception) {
+			endGame()
+		}
+	}
+
 	private fun addNextPiece() {
 		pieces.addLast(nextQueue.removeFirst())
 		nextQueue.addLast(generatePiece())
@@ -368,6 +380,7 @@ class GameFragment : Fragment(),
 	private fun rotatePiece() {
 		val piece = pieces.last()
 		piece.shape.createLayout((piece.shape.currentRotation + PieceShape.ROTATION_90) % PieceShape.ROTATION_360)
+		piece.shape.make(piece)
 	}
 
 	private fun swapHoldPiece() {
@@ -468,6 +481,7 @@ class GameFragment : Fragment(),
 
 	override fun onSingleTapUp(e: MotionEvent?): Boolean {
 		rotatePiece()
+		tryDrawPieces()
 		return true
 	}
 
@@ -477,6 +491,59 @@ class GameFragment : Fragment(),
 		distanceX: Float,
 		distanceY: Float
 	): Boolean {
+		xOffset += distanceX
+		yOffset += distanceY
+
+		val piece = pieces.last()
+		when (piece.direction) {
+			PieceDirection.UP, PieceDirection.DOWN -> {
+				if (xOffset > minimumOffset) {
+					xOffset = 0.0
+					piece.direction.moveLeft(piece)
+				} else if (-xOffset > minimumOffset) {
+					xOffset = 0.0
+					piece.direction.moveRight(piece)
+				}
+			}
+			PieceDirection.LEFT, PieceDirection.RIGHT -> {
+				if (yOffset > minimumOffset) {
+					yOffset = 0.0
+					piece.direction.moveUp(piece)
+				} else if (-yOffset > minimumOffset) {
+					yOffset = 0.0
+					piece.direction.moveDown(piece)
+				}
+			}
+		}
+
+		when (piece.direction) {
+			PieceDirection.UP -> {
+				if (yOffset > minimumOffset) {
+					yOffset = 0.0
+					movePiece()
+				}
+			}
+			PieceDirection.DOWN -> {
+				if (-yOffset > minimumOffset) {
+					yOffset = 0.0
+					movePiece()
+				}
+			}
+			PieceDirection.LEFT -> {
+				if (xOffset > minimumOffset) {
+					xOffset = 0.0
+					movePiece()
+				}
+			}
+			PieceDirection.RIGHT -> {
+				if (-xOffset > minimumOffset) {
+					xOffset = 0.0
+					movePiece()
+				}
+			}
+		}
+
+		tryDrawPieces()
 		return true
 	}
 
@@ -487,14 +554,9 @@ class GameFragment : Fragment(),
 			piece.direction.drop(piece)) {
 			resetPieceDirection(piece)
 		}
-		try {
-			drawPieces()
-		} catch (e: Exception) {
-			pause()
-			binding.resumeButton.visibility = View.GONE
-			binding.gameOverTextView.visibility = View.VISIBLE
-		}
+
 		movePiece()
+		tryDrawPieces()
 	}
 
 	override fun onFling(
@@ -503,18 +565,13 @@ class GameFragment : Fragment(),
 		velocityX: Float,
 		velocityY: Float
 	): Boolean {
-		val piece = pieces.last()
-		when (piece.direction) {
-			PieceDirection.UP, PieceDirection.DOWN -> {
-				if (velocityX < 0) piece.direction.moveLeft(piece)
-				else if (velocityX > 0) piece.direction.moveRight(piece)
-			}
-			PieceDirection.LEFT, PieceDirection.RIGHT -> {
-				if (velocityY < 0) piece.direction.moveUp(piece)
-				else if (velocityY > 0) piece.direction.moveDown(piece)
-			}
-		}
 		return true
+	}
+
+	fun endGame() {
+		pause()
+		binding.resumeButton.visibility = View.GONE
+		binding.gameOverTextView.visibility = View.VISIBLE
 	}
 	// endregion
 }
