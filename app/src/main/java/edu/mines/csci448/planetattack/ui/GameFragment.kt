@@ -3,7 +3,6 @@ package edu.mines.csci448.planetattack.ui
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +14,8 @@ import edu.mines.csci448.planetattack.BackPressListener
 import edu.mines.csci448.planetattack.BuildConfig
 import edu.mines.csci448.planetattack.GameSpeed
 import edu.mines.csci448.planetattack.R
+import edu.mines.csci448.planetattack.data.Highscore
+import edu.mines.csci448.planetattack.data.repo.HighscoreRepository
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.*
 import kotlin.jvm.Throws
@@ -36,6 +37,8 @@ class GameFragment : Fragment(),
 	private var yOffset = 0.0
 
 	private val minimumOffset = 60.0
+
+	private var hasEnded = false
 
 	private var showNext = true
 	private var showHold = false
@@ -572,6 +575,13 @@ class GameFragment : Fragment(),
 		pause()
 		binding.resumeButton.visibility = View.GONE
 		binding.gameOverTextView.visibility = View.VISIBLE
+
+		if (!hasEnded) {
+			val highscore = Highscore(score=currentScore)
+			HighscoreRepository.getInstance(requireContext()).addHighscore(highscore)
+		}
+
+		hasEnded = true
 	}
 	// endregion
 }
