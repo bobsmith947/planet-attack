@@ -7,6 +7,7 @@
 	<string name="show_hold_piece">Show Hold Piece</string>
 	<string name="reset_data">Reset Data</string>
 	<string name="reset_data_summary">Clear scores and erase database.</string>
+	<string name="reset_data_toast">Data Reset!</string>
 	<string name="play_label">Play Game</string>
 	<string name="scores_label">High Scores</string>
 	<string name="help_label">How to Play</string>
@@ -15,7 +16,7 @@
 	<string name="next_block">Next: </string>
 	<string name="hold_block">Hold</string>
 	<string name="game_score">Score: </string>
-	<string name="game_high_score">High Score: </string>
+	<string name="game_high_score">Top: </string>
 	<string name="new_record">New Record!</string>
 	<string name="resume_label">Resume</string>
 	<string name="quit_label">Quit</string>

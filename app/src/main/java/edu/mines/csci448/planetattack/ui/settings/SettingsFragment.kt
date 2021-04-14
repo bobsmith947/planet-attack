@@ -1,6 +1,7 @@
 package edu.mines.csci448.planetattack.ui.settings
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import edu.mines.csci448.planetattack.R
@@ -15,6 +16,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
 		button?.setOnPreferenceClickListener {
 			HighscoreRepository.getInstance(requireContext())
 				.deleteHighScores()
+			Toast.makeText(requireContext(), R.string.reset_data_toast, Toast.LENGTH_SHORT)
+				.show()
 			true
 		}
 	}
