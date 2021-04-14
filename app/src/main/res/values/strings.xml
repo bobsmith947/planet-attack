@@ -25,7 +25,7 @@
 		Pieces will reverse direction if they reach the other side of the screen.
 		The hold button swaps out the current piece (if enabled in the settings).
 		Form a complete ring to clear blocks.
-		The game will end if the stack reaches the edge of the screen.
+		The game will end if the stack reaches past the edge of the tinted box within the screen.
 	</string>
 	<string name="help_okay">Okay</string>
 	<string name="game_over_label">Game Over!</string>
