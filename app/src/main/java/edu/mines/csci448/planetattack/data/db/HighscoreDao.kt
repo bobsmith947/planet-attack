@@ -15,6 +15,9 @@ interface HighscoreDao {
 	@Query("SELECT * FROM highscore WHERE id=(:id)")
 	fun getHighScore(id: UUID): LiveData<Highscore?>
 
+	@Query("SELECT * FROM highscore ORDER BY score DESC LIMIT 1")
+	fun getTopScore(): LiveData<Highscore>
+
 	@Query("DELETE FROM highscore")
 	fun deleteHighscores()
 

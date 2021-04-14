@@ -1,7 +1,6 @@
 package edu.mines.csci448.planetattack.data.repo
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import edu.mines.csci448.planetattack.data.Highscore
 import edu.mines.csci448.planetattack.data.db.HighscoreDao
 import edu.mines.csci448.planetattack.data.db.HighscoreDatabase
@@ -27,8 +26,9 @@ class HighscoreRepository private constructor(private val highscoreDao: Highscor
 
 	private val executor = Executors.newSingleThreadExecutor()
 
-	fun getHighscores(): LiveData<List<Highscore>> = highscoreDao.getHighScores()
-	fun getHighscore(id: UUID): LiveData<Highscore?> = highscoreDao.getHighScore(id)
+	fun getHighscores() = highscoreDao.getHighScores()
+	fun getHighscore(id: UUID) = highscoreDao.getHighScore(id)
+	fun getTopScore() = highscoreDao.getTopScore()
 
 	fun deleteHighScores() {
 		executor.execute {

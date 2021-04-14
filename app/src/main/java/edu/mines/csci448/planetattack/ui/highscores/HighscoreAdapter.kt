@@ -6,10 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import edu.mines.csci448.planetattack.data.Highscore
 import edu.mines.csci448.planetattack.databinding.FragmentScoreBinding
 
-/**
- * [RecyclerView.Adapter] that can display a [DummyItem].
- * TODO: Replace the implementation with code for your data type.
- */
 class HighscoreAdapter(private val highscores: List<Highscore>) : RecyclerView.Adapter<HighscoreAdapter.ViewHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,13 +18,14 @@ class HighscoreAdapter(private val highscores: List<Highscore>) : RecyclerView.A
 		holder.bind(highscore, position)
 	}
 
-	override fun getItemCount(): Int = highscores.size
+	override fun getItemCount() = highscores.size
 
 	inner class ViewHolder(val binding: FragmentScoreBinding) : RecyclerView.ViewHolder(binding.root) {
 
 		fun bind(highscore: Highscore, position: Int) {
-			binding.placeTextView.text = "#${position + 1}"
-			binding.scoreTextView.text = "${highscore.score}"
+			val positionString = "#${position + 1}"
+			binding.placeTextView.text = positionString
+			binding.scoreTextView.text = highscore.toString()
 		}
 
 		override fun toString() = "${super.toString()} '${binding.scoreTextView.text}'"

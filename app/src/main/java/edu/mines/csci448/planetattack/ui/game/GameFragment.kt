@@ -178,6 +178,15 @@ class GameFragment : Fragment(),
 		return binding.root
 	}
 
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
+		viewModel.topScoreLiveData.observe(
+			viewLifecycleOwner, { score ->
+				binding.highScoreLabel.text = score?.toString() ?: "None"
+			}
+		)
+	}
+
 	override fun onDestroyView() {
 		super.onDestroyView()
 		binding.gameView.holder.removeCallback(this)

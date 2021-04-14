@@ -23,6 +23,8 @@ class GameViewModel(
 	private val blocksPerAxis: Int
 	): ViewModel() {
 
+	val topScoreLiveData = highscoreRepository.getTopScore()
+
 	// region UI Properties
 	var canvasWidth = 0
 	var canvasHeight = 0

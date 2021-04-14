@@ -21,7 +21,7 @@ abstract class HighscoreDatabase : RoomDatabase() {
 					instance = Room.databaseBuilder(context.applicationContext, HighscoreDatabase::class.java, DATABASE_NAME)
 						.build()
 
-					INSTANCE = INSTANCE
+					INSTANCE = instance
 				}
 				return instance
 			}

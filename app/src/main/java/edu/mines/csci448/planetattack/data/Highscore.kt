@@ -5,6 +5,10 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity
-data class Highscore(@PrimaryKey val id: UUID = UUID.randomUUID(),
-					 var score: Int,
-					 var date: Date = Date())
+data class Highscore(
+	@PrimaryKey val id: UUID = UUID.randomUUID(),
+	var score: Int,
+	var date: Date = Date()
+) {
+	override fun toString() = score.toString()
+}

@@ -5,15 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import edu.mines.csci448.planetattack.data.Highscore
 import edu.mines.csci448.planetattack.databinding.FragmentScoreListBinding
 
-/**
- * A fragment representing a list of Items.
- */
 class HighscoreFragment : Fragment() {
 
 	private lateinit var highscoreListViewModel: HighscoreListViewModel
@@ -30,7 +26,7 @@ class HighscoreFragment : Fragment() {
 			.get(HighscoreListViewModel::class.java)
 	}
 
-	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 		_binding = FragmentScoreListBinding.inflate(inflater, container, false)
 		updateUI(emptyList())
 
@@ -42,8 +38,7 @@ class HighscoreFragment : Fragment() {
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 		highscoreListViewModel.highscoreListLiveData.observe(
-			viewLifecycleOwner,
-			Observer { highscores ->
+			viewLifecycleOwner, { highscores ->
 				highscores?.let {
 					updateUI(highscores)
 				}
