@@ -39,7 +39,7 @@ class GamePiece(var x: Int, var y: Int, val shape: PieceShape, var direction: Pi
 		/**
 		 * The size of each block in terms of coordinate units.
 		 */
-		const val blockSize = 50
+		var blockSize = 50
 
 		/**
 		 * A bi-directional map between blocks and coordinate pairs.

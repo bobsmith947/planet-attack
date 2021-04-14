@@ -2,6 +2,8 @@ package edu.mines.csci448.planetattack.ui.game
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
@@ -14,71 +16,53 @@ import edu.mines.csci448.planetattack.BackPressListener
 import edu.mines.csci448.planetattack.BuildConfig
 import edu.mines.csci448.planetattack.GameSpeed
 import edu.mines.csci448.planetattack.R
-import edu.mines.csci448.planetattack.data.Highscore
 import edu.mines.csci448.planetattack.data.repo.HighscoreRepository
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.*
-import kotlin.reflect.full.createInstance
+import kotlin.collections.ArrayDeque
 
 class GameFragment : Fragment(),
-	BackPressListener, SurfaceHolder.Callback, GestureDetector.OnGestureListener {
+	BackPressListener, SurfaceHolder.Callback, GestureDetector.OnGestureListener, GameFragmentCallbacks {
+
+	private lateinit var viewModel: GameViewModel
+
+	// region Gesture Properties
+	private var xOffset = 0.0
+	private var yOffset = 0.0
+	private val minimumOffset = 60.0
+	// endregion
+
 	// region UI Properties
 	private var _binding: FragmentGameBinding? = null
 	private val binding get() = _binding!!
 
 	private var _holder: SurfaceHolder? = null
 	private val holder get() = _holder!!
+
 	private var canvasWidth = 0
 	private var canvasHeight = 0
 	private var canvasMargin = 0
-
-	private var xOffset = 0.0
-	private var yOffset = 0.0
-
-	private val minimumOffset = 60.0
-
-	private var hasEnded = false
 
 	private var showNext = true
 	private var showHold = false
 	// endregion
 
-	private val pieceMover = object : Runnable {
-		override fun run() {
-			movePiece()
-			try {
-				drawPieces()
-			} catch (e: Exception) {
-				endGame()
-				return
-			}
-			binding.gameView.postDelayed(this, speed.dropDelayMillis)
-		}
-	}
+	// region Game Play Properties
 
-	// region Gameplay Properties
+	// endregion
+
+	// region Game Play State Properties
 	private var isPaused = false
-	private lateinit var speed: GameSpeed
-	private lateinit var rings: List<MutableSet<Pair<Int, Int>>>
-	private var currentScore = 0
-		set(value) {
-			field = value
-			binding.scoreLabel.text = value.toString()
-		}
 
-	private val pieces = ArrayDeque<GamePiece>()
-	private val nextQueue = ArrayDeque<GamePiece>()
-	private lateinit var planetBlock: BlockDrawable
-	private var holdPiece: GamePiece? = null
 	// endregion
 
 	companion object {
-		private const val PIECE_PLACED_SCORE = 1_000
-		private const val RING_CLEARED_SCORE = 10_000
 		private const val PIECES_KEY = "pieces"
 		private const val NEXT_KEY = "nextQueue"
 		private const val HOLD_KEY = "holdPiece"
 		private const val SCORE_KEY = "currentScore"
+
+		private const val PIECES_PER_SIDE = 10
 	}
 
 	// region Lifecycle Callbacks
@@ -87,20 +71,46 @@ class GameFragment : Fragment(),
 		GamePiece.resources = resources
 
 		val prefs = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-		speed = when (prefs.getString("speed", "")) {
+		val speed = when (prefs.getString("speed", "")) {
 			"1" -> GameSpeed.SLOW
 			"2" -> GameSpeed.MEDIUM
 			"3" -> GameSpeed.FAST
-			else -> throw IllegalStateException()
+			else -> {
+				// Invalid preference state, fix state and default to SLOW
+				prefs.edit()
+					.putString("string", "1")
+					.apply()
+				GameSpeed.SLOW
+			}
 		}
+
 		showNext = prefs.getBoolean("next", showNext)
 		showHold = prefs.getBoolean("hold", showHold)
+
+		val pieces = ArrayDeque<GamePiece>()
+		val nextQueue = ArrayDeque<GamePiece>()
+		var holdPiece: GamePiece? = null
 
 		if (savedInstanceState != null) {
 			savedInstanceState.getParcelableArrayList<GamePiece>(PIECES_KEY)?.let { pieces.addAll(it) }
 			savedInstanceState.getParcelableArrayList<GamePiece>(NEXT_KEY)?.let { nextQueue.addAll(it) }
 			holdPiece = savedInstanceState.getParcelable(HOLD_KEY)
 		}
+
+		val highscoreRepository = HighscoreRepository.getInstance(requireContext())
+
+		val score = savedInstanceState?.getInt(SCORE_KEY, 0) ?: 0
+
+		viewModel = GameViewModel(
+			highscoreRepository,
+			this,
+			speed,
+			holdPiece,
+			pieces,
+			nextQueue,
+			score,
+			PIECES_PER_SIDE * 2 + 1
+		)
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -113,7 +123,6 @@ class GameFragment : Fragment(),
 			resume()
 		} else {
 			pause()
-			currentScore = savedInstanceState.getInt(SCORE_KEY)
 		}
 
 		binding.gameView.holder.addCallback(this)
@@ -156,10 +165,7 @@ class GameFragment : Fragment(),
 
 	override fun onSaveInstanceState(outState: Bundle) {
 		super.onSaveInstanceState(outState)
-		outState.putParcelableArrayList(PIECES_KEY, ArrayList(pieces))
-		outState.putParcelableArrayList(NEXT_KEY, ArrayList(nextQueue))
-		outState.putParcelable(HOLD_KEY, holdPiece)
-		outState.putInt(SCORE_KEY, currentScore)
+		viewModel.saveToBundle(outState)
 	}
 	// endregion
 
@@ -175,7 +181,7 @@ class GameFragment : Fragment(),
 			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_background)
 			isEnabled = false
 		}
-		binding.gameView.removeCallbacks(pieceMover)
+		binding.gameView.removeCallbacks(viewModel.pieceMover)
 	}
 
 	private fun resume() {
@@ -189,7 +195,8 @@ class GameFragment : Fragment(),
 			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_foreground)
 			isEnabled = true
 		}
-		binding.gameView.postDelayed(pieceMover, speed.dropDelayMillis)
+
+		viewModel.resume()
 	}
 
 	private fun setButtonOnClickListeners() {
@@ -206,7 +213,7 @@ class GameFragment : Fragment(),
 		}
 
 		binding.holdButton.setOnClickListener {
-			swapHoldPiece()
+			viewModel.swapHoldPiece()
 		}
 	}
 	// endregion
@@ -223,29 +230,30 @@ class GameFragment : Fragment(),
 			if (BuildConfig.DEBUG && canvasWidth != canvasHeight) {
 				error("Assertion failed")
 			}
+
+			GamePiece.blockSize = canvasWidth / (PIECES_PER_SIDE * 2 + 1)
 			// make sure canvas is a multiple of block size so pieces are aligned
 			canvasMargin = canvasWidth % GamePiece.blockSize
 			canvasWidth -= canvasMargin
 			canvasHeight -= canvasMargin
 
-			// add "planet" to center
-			planetBlock = BlockDrawable(BlockColor.GRAY, resources, null)
-			val x = (canvasWidth / 2) - (GamePiece.blockSize / 2)
-			val y = (canvasHeight / 2) - (GamePiece.blockSize / 2)
-			planetBlock.setBounds(x, y)
-			GamePiece.occupiedSpaces[planetBlock] = x to y
+			viewModel.canvasWidth = canvasWidth
+			viewModel.canvasHeight = canvasHeight
 
-			calculateRings()
+			// add "planet" to center
+			viewModel.makePlanetBlock(resources)
+
+			viewModel.calculateRings()
 			// when not restoring from saved instance state
 			if (!isPaused) {
-				nextQueue.addAll(generateSequence(this::generatePiece).take(3))
-				addNextPiece()
+				viewModel.makeNextQueue()
+				viewModel.addNextPiece()
 			}
 		}
 	}
 
 	override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-		drawPieces()
+		viewModel.onPiecesChanged()
 	}
 
 	override fun surfaceDestroyed(holder: SurfaceHolder) {
@@ -255,221 +263,49 @@ class GameFragment : Fragment(),
 	// endregion
 
 	//region Gameplay Methods
-	@Throws(Exception::class)
-	private fun drawPieces() {
+	override fun drawPieces(planetBlock: BlockDrawable, pieces: ArrayDeque<GamePiece>) {
 		val canvas = holder.lockCanvas()
 		// reset the canvas
 		canvas.drawColor(Color.BLACK)
+
+		// Valid
+
+		val placeableRect = Rect(
+			GamePiece.blockSize * 4,
+			GamePiece.blockSize * 4,
+			(PIECES_PER_SIDE * 2 - 3) * GamePiece.blockSize,
+			(PIECES_PER_SIDE * 2 - 3) * GamePiece.blockSize
+		)
+
+		val placeablePaint = Paint()
+			.apply {
+				color = Color.WHITE
+				alpha = 32
+			}
+
+		canvas.drawRect(placeableRect, placeablePaint)
+
 		planetBlock.draw(canvas)
 		// draw previously placed pieces
 		pieces.dropLast(1).forEach { it.drawBlocks(canvas) }
 		// ensure there is space for the current piece
 		val piece = pieces.last()
-		if (piece.blocks.filterNotNull().any { !piece.contains(it.x, it.y) }) {
-			// if there is no space for the piece, throw an exception to indicate the game is over
-			holder.unlockCanvasAndPost(canvas)
-			throw Exception()
-		}
+//		if (piece.blocks.filterNotNull().any { !piece.contains(it.x, it.y) }) {
+//			// if there is no space for the piece, throw an exception to indicate the game is over
+//			holder.unlockCanvasAndPost(canvas)
+//			throw Exception()
+//		}
 		piece.drawBlocks(canvas)
 		holder.unlockCanvasAndPost(canvas)
 	}
 
-	private fun tryDrawPieces() {
-		try {
-			drawPieces()
-		} catch (e: Exception) {
-			endGame()
-		}
-	}
-
-	private fun addNextPiece() {
-		pieces.addLast(nextQueue.removeFirst())
-		nextQueue.addLast(generatePiece())
-		binding.firstNextImageView.setImageResource(nextQueue[0].shape.iconId)
-		binding.secondNextImageView.setImageResource(nextQueue[1].shape.iconId)
-		binding.thirdNextImageView.setImageResource(nextQueue[2].shape.iconId)
-	}
-
-	private fun generatePiece(): GamePiece {
-		val direction = PieceDirection.values().random()
-		val shape = PieceShape::class.sealedSubclasses.random().createInstance()
-		return when (direction) {
-			PieceDirection.UP -> {
-				shape.createLayout(PieceShape.ROTATION_180)
-				GamePiece(
-					(canvasWidth / 2) - (GamePiece.blockSize / 2),
-					canvasHeight - (GamePiece.blockSize * shape.height),
-					shape,
-					direction
-				)
-			}
-			PieceDirection.DOWN -> {
-				shape.createLayout(PieceShape.ROTATION_0)
-				GamePiece(
-					(canvasWidth / 2) - (GamePiece.blockSize / 2),
-					0,
-					shape,
-					direction
-				)
-			}
-			PieceDirection.LEFT -> {
-				shape.createLayout(PieceShape.ROTATION_90)
-				GamePiece(
-					canvasWidth - (GamePiece.blockSize * shape.width),
-					(canvasHeight / 2) - (GamePiece.blockSize / 2),
-					shape,
-					direction
-				)
-			}
-			PieceDirection.RIGHT -> {
-				shape.createLayout(PieceShape.ROTATION_270)
-				GamePiece(
-					0,
-					(canvasHeight / 2) - (GamePiece.blockSize / 2),
-					shape,
-					direction
-				)
-			}
-		}
-	}
-
-	private fun resetPiecePosition(piece: GamePiece) {
-		val (x, y) = when (piece.direction) {
-			PieceDirection.UP -> arrayOf((canvasWidth / 2) - (GamePiece.blockSize / 2),
-				canvasHeight - (GamePiece.blockSize * piece.shape.height))
-			PieceDirection.DOWN -> arrayOf((canvasWidth / 2) - (GamePiece.blockSize / 2), 0)
-			PieceDirection.LEFT -> arrayOf(canvasWidth - (GamePiece.blockSize * piece.shape.width),
-				(canvasHeight / 2) - (GamePiece.blockSize / 2))
-			PieceDirection.RIGHT -> arrayOf(0, (canvasHeight / 2) - (GamePiece.blockSize / 2))
-		}
-		piece.x = x
-		piece.y = y
-	}
-
-	private fun resetPieceDirection(piece: GamePiece) {
-		piece.direction = when (piece.direction) {
-			PieceDirection.UP -> {
-				if (piece.y <= 0) PieceDirection.DOWN
-				else PieceDirection.UP
-			}
-			PieceDirection.DOWN -> {
-				if (piece.y >= canvasHeight - (GamePiece.blockSize * piece.shape.height)) PieceDirection.UP
-				else PieceDirection.DOWN
-			}
-			PieceDirection.LEFT -> {
-				if (piece.x <= 0) PieceDirection.RIGHT
-				else PieceDirection.LEFT
-			}
-			PieceDirection.RIGHT -> {
-				if (piece.x >= canvasWidth - (GamePiece.blockSize * piece.shape.width)) PieceDirection.LEFT
-				else PieceDirection.RIGHT
-			}
-		}
-	}
-
-	private fun movePiece() {
-		val piece = pieces.last()
-		if (!piece.direction.drop(piece)) {
-			currentScore += PIECE_PLACED_SCORE * (speed.ordinal + 1)
-			// check for completed rings
-			clearRings()
-			addNextPiece()
-		}
-		// adjust direction if reached other side
-		resetPieceDirection(piece)
-	}
-
-	private fun rotatePiece() {
-		val piece = pieces.last()
-		piece.shape.createLayout((piece.shape.currentRotation + PieceShape.ROTATION_90) % PieceShape.ROTATION_360)
-		piece.shape.make(piece)
-	}
-
-	private fun swapHoldPiece() {
-		val hold = holdPiece
-		holdPiece = pieces.removeLast()
-		holdPiece!!.blocks.forEach { GamePiece.occupiedSpaces.remove(it) }
-		resetPiecePosition(holdPiece!!)
-		if (hold != null) {
-			pieces.addLast(hold)
-		} else {
-			addNextPiece()
-		}
-		binding.holdImageView.setImageResource(holdPiece!!.shape.iconId)
-	}
-
-	private fun calculateRings() {
-		val center = (canvasHeight / 2) - (GamePiece.blockSize / 2)
-		val numRings = center / GamePiece.blockSize
-		rings = List(numRings) { LinkedHashSet() }
-		// add center coordinates to use for calculating first ring
-		rings[0].add(center to center)
-		for (i in 1 until numRings) {
-			// add diagonal spaces
-			val offset = GamePiece.blockSize * i
-			val diagonals = arrayOf(
-				// top left
-				(center - offset) to (center - offset),
-				// top right
-				(center + offset) to (center - offset),
-				// bottom right
-				(center + offset) to (center + offset),
-				// bottom left
-				(center - offset) to (center + offset)
-			)
-			rings[i].addAll(diagonals)
-
-			// add spaces bordering previous ring
-			for (j in rings[i - 1]) {
-				if (j.first <= center) rings[i].add((j.first - GamePiece.blockSize) to j.second)
-				if (j.first >= center) rings[i].add((j.first + GamePiece.blockSize) to j.second)
-				if (j.second <= center) rings[i].add(j.first to (j.second - GamePiece.blockSize))
-				if (j.second >= center) rings[i].add(j.first to (j.second + GamePiece.blockSize))
-			}
-
-			// remove interior spaces
-			rings[i].removeIf {
-				(it.first in (diagonals[0].first + 1)..center && it.second in (diagonals[0].second + 1)..center) ||
-				(it.first in center until diagonals[1].first && it.second in (diagonals[1].second + 1)..center) ||
-				(it.first in center until diagonals[2].first && it.second in center until diagonals[2].second) ||
-				(it.first in (diagonals[3].first + 1)..center && it.second in center until diagonals[3].second)
-			}
-		}
-		// remove center coordinates
-		rings = rings.drop(1)
-	}
-
-	private fun clearRings() {
-		rings.forEachIndexed { index, ring ->
-			if (GamePiece.occupiedSpaces.values.containsAll(ring)) {
-				// determine ring bounds
-				val (xmin, xmax, ymin, ymax) = with(ring) { arrayOf(
-					minOf { it.first }, maxOf { it.first },
-					minOf { it.second }, maxOf { it.second }
-				) }
-				ring.forEach {
-					val block = GamePiece.occupiedSpaces.inverse()[it]
-					GamePiece.occupiedSpaces.remove(block)
-					val blocks = block!!.piece!!.blocks
-					blocks[blocks.indexOf(block)] = null
-				}
-				currentScore += RING_CLEARED_SCORE * (index + 1) * (speed.ordinal + 1)
-				// remove empty pieces
-				pieces.removeIf { it.blocks.filterNotNull().isEmpty() }
-				// fill in cleared spaces
-				pieces.forEach { piece ->
-					piece.blocks.filterNotNull().forEach {
-						if (it.x < xmin) it.moveRight()
-						else if (it.x > xmax) it.moveLeft()
-						if (it.y < ymin) it.moveDown()
-						else if (it.y > ymax) it.moveUp()
-						// update piece coordinates
-						val (x, y) = piece.blocks.filterNotNull()[0]; piece.x = x; piece.y = y
-					}
-				}
-			}
-		}
-	}
+//	private fun tryDrawPieces() {
+//		try {
+//			drawPieces()
+//		} catch (e: Exception) {
+//			onGameEnded()
+//		}
+//	}
 	// endregion
 
 	// region GestureDetector Callbacks
@@ -482,8 +318,8 @@ class GameFragment : Fragment(),
 	}
 
 	override fun onSingleTapUp(e: MotionEvent?): Boolean {
-		rotatePiece()
-		tryDrawPieces()
+		viewModel.rotatePiece()
+		viewModel.onPiecesChanged()
 		return true
 	}
 
@@ -496,69 +332,63 @@ class GameFragment : Fragment(),
 		xOffset += distanceX
 		yOffset += distanceY
 
-		val piece = pieces.last()
-		when (piece.direction) {
+		val direction = viewModel.pieceDirection
+
+		when (direction) {
 			PieceDirection.UP, PieceDirection.DOWN -> {
 				if (xOffset > minimumOffset) {
 					xOffset = 0.0
-					piece.direction.moveLeft(piece)
+					viewModel.movePieceInDirection(PieceDirection.LEFT)
 				} else if (-xOffset > minimumOffset) {
 					xOffset = 0.0
-					piece.direction.moveRight(piece)
+					viewModel.movePieceInDirection(PieceDirection.RIGHT)
 				}
 			}
 			PieceDirection.LEFT, PieceDirection.RIGHT -> {
 				if (yOffset > minimumOffset) {
 					yOffset = 0.0
-					piece.direction.moveUp(piece)
+					viewModel.movePieceInDirection(PieceDirection.UP)
 				} else if (-yOffset > minimumOffset) {
 					yOffset = 0.0
-					piece.direction.moveDown(piece)
+					viewModel.movePieceInDirection(PieceDirection.DOWN)
 				}
 			}
 		}
 
-		when (piece.direction) {
+		when (direction) {
 			PieceDirection.UP -> {
 				if (yOffset > minimumOffset) {
 					yOffset = 0.0
-					movePiece()
+					viewModel.movePiece()
 				}
 			}
 			PieceDirection.DOWN -> {
 				if (-yOffset > minimumOffset) {
 					yOffset = 0.0
-					movePiece()
+					viewModel.movePiece()
 				}
 			}
 			PieceDirection.LEFT -> {
 				if (xOffset > minimumOffset) {
 					xOffset = 0.0
-					movePiece()
+					viewModel.movePiece()
 				}
 			}
 			PieceDirection.RIGHT -> {
 				if (-xOffset > minimumOffset) {
 					xOffset = 0.0
-					movePiece()
+					viewModel.movePiece()
 				}
 			}
 		}
 
-		tryDrawPieces()
+		viewModel.onPiecesChanged()
+
 		return true
 	}
 
 	override fun onLongPress(e: MotionEvent?) {
-		val piece = pieces.last()
-		while (piece.x in GamePiece.blockSize until canvasWidth - (GamePiece.blockSize * piece.shape.width) &&
-			piece.y in GamePiece.blockSize until canvasHeight - (GamePiece.blockSize * piece.shape.height) &&
-			piece.direction.drop(piece)) {
-			resetPieceDirection(piece)
-		}
-
-		movePiece()
-		tryDrawPieces()
+		viewModel.fastMove()
 	}
 
 	override fun onFling(
@@ -569,18 +399,35 @@ class GameFragment : Fragment(),
 	): Boolean {
 		return true
 	}
+	// endregion
 
-	fun endGame() {
+	override fun drawNextQueue(queue: ArrayDeque<GamePiece>) {
+		binding.firstNextImageView.setImageResource(queue[0].shape.iconId)
+		binding.secondNextImageView.setImageResource(queue[1].shape.iconId)
+		binding.thirdNextImageView.setImageResource(queue[2].shape.iconId)
+	}
+
+	override fun drawScore(score: Int) {
+		binding.scoreLabel.text = score.toString()
+	}
+
+	override fun drawHoldPiece(piece: GamePiece?) {
+		binding.holdImageView.visibility = when (piece) {
+			null -> View.INVISIBLE
+			else -> {
+				binding.holdImageView.setImageResource(piece.shape.iconId)
+				View.VISIBLE
+			}
+		}
+	}
+
+	override fun onGameEnded() {
 		pause()
 		binding.resumeButton.visibility = View.GONE
 		binding.gameOverTextView.visibility = View.VISIBLE
-
-		if (!hasEnded) {
-			val highscore = Highscore(score=currentScore)
-			HighscoreRepository.getInstance(requireContext()).addHighscore(highscore)
-		}
-
-		hasEnded = true
 	}
-	// endregion
+
+	override fun gameViewPostDelayed(action: Runnable, delayMillis: Long) {
+		binding.gameView.postDelayed(action, delayMillis)
+	}
 }
