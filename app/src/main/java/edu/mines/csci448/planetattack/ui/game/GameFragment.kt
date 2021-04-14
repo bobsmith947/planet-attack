@@ -12,10 +12,7 @@ import androidx.core.view.GestureDetectorCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
-import edu.mines.csci448.planetattack.BackPressListener
-import edu.mines.csci448.planetattack.BuildConfig
-import edu.mines.csci448.planetattack.GameSpeed
-import edu.mines.csci448.planetattack.R
+import edu.mines.csci448.planetattack.*
 import edu.mines.csci448.planetattack.data.repo.HighscoreRepository
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.*
@@ -29,7 +26,8 @@ class GameFragment : Fragment(),
 	// region Gesture Properties
 	private var xOffset = 0.0
 	private var yOffset = 0.0
-	private val minimumOffset = 60.0
+	private var minimumOffset = 0.0
+	private lateinit var swipeSensitivity: SwipeSensitivity
 	// endregion
 
 	// region UI Properties
@@ -42,6 +40,8 @@ class GameFragment : Fragment(),
 	private var canvasWidth = 0
 	private var canvasHeight = 0
 	private var canvasMargin = 0
+
+	private var piecesPerSize: Int = 0
 
 	private var showNext = true
 	private var showHold = false
@@ -61,8 +61,6 @@ class GameFragment : Fragment(),
 		private const val NEXT_KEY = "nextQueue"
 		private const val HOLD_KEY = "holdPiece"
 		private const val SCORE_KEY = "currentScore"
-
-		private const val PIECES_PER_SIDE = 10
 	}
 
 	// region Lifecycle Callbacks
@@ -78,11 +76,44 @@ class GameFragment : Fragment(),
 			else -> {
 				// Invalid preference state, fix state and default to SLOW
 				prefs.edit()
-					.putString("string", "1")
+					.putString("speed", "1")
 					.apply()
 				GameSpeed.SLOW
 			}
 		}
+
+		swipeSensitivity = when (prefs.getString("swipe_sensitivity", "")) {
+			"1" -> SwipeSensitivity.ULTRA_LOW
+			"2" -> SwipeSensitivity.VERY_LOW
+			"3" -> SwipeSensitivity.LOW
+			"4" -> SwipeSensitivity.MEDIUM
+			"5" -> SwipeSensitivity.HIGH
+			"6" -> SwipeSensitivity.VERY_HIGH
+			"7" -> SwipeSensitivity.ULTRA_HIGH
+			else -> {
+				// Invalid preference state, fix state and default to MEDIUM
+				prefs.edit()
+					.putString("swipe_sensitivity", "4")
+					.apply()
+				SwipeSensitivity.MEDIUM
+			}
+		}
+
+		val size = when (prefs.getString("size", "")) {
+			"1" -> GameSize.SMALL
+			"2" -> GameSize.MEDIUM
+			"3" -> GameSize.LARGE
+			"4" -> GameSize.HUGE
+			else -> {
+				// Invalid preference state, fix state and default to SMALL
+				prefs.edit()
+					.putString("size", "1")
+					.apply()
+				GameSize.SMALL
+			}
+		}
+
+		piecesPerSize = size.piecesPerSide
 
 		showNext = prefs.getBoolean("next", showNext)
 		showHold = prefs.getBoolean("hold", showHold)
@@ -109,7 +140,7 @@ class GameFragment : Fragment(),
 			pieces,
 			nextQueue,
 			score,
-			PIECES_PER_SIDE * 2 + 1
+			piecesPerSize * 2 + 1
 		)
 	}
 
@@ -231,11 +262,13 @@ class GameFragment : Fragment(),
 				error("Assertion failed")
 			}
 
-			GamePiece.blockSize = canvasWidth / (PIECES_PER_SIDE * 2 + 1)
+			GamePiece.blockSize = canvasWidth / (piecesPerSize * 2 + 1)
 			// make sure canvas is a multiple of block size so pieces are aligned
 			canvasMargin = canvasWidth % GamePiece.blockSize
 			canvasWidth -= canvasMargin
 			canvasHeight -= canvasMargin
+
+			minimumOffset = canvasWidth.toDouble() / piecesPerSize.toDouble() / 2.0 / swipeSensitivity.multiplier
 
 			viewModel.canvasWidth = canvasWidth
 			viewModel.canvasHeight = canvasHeight
@@ -273,8 +306,8 @@ class GameFragment : Fragment(),
 		val placeableRect = Rect(
 			GamePiece.blockSize * 4,
 			GamePiece.blockSize * 4,
-			(PIECES_PER_SIDE * 2 - 3) * GamePiece.blockSize,
-			(PIECES_PER_SIDE * 2 - 3) * GamePiece.blockSize
+			(piecesPerSize * 2 - 3) * GamePiece.blockSize,
+			(piecesPerSize * 2 - 3) * GamePiece.blockSize
 		)
 
 		val placeablePaint = Paint()

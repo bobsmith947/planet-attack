@@ -8,6 +8,22 @@
 		app:defaultValue="1"
 		app:useSimpleSummaryProvider="true" />
 
+	<ListPreference
+		app:key="size"
+		app:title="@string/game_size"
+		app:entries="@array/size_choices"
+		app:entryValues="@array/size_values"
+		app:defaultValue="2"
+		app:useSimpleSummaryProvider="true" />
+
+	<ListPreference
+		app:key="swipe_sensitivity"
+		app:title="@string/swipe_sensitivity"
+		app:entries="@array/swipe_sensitivity_choices"
+		app:entryValues="@array/swipe_sensitivity_values"
+		app:defaultValue="4"
+		app:useSimpleSummaryProvider="true" />
+
 	<SwitchPreference
 		app:key="next"
 		app:title="@string/show_next_piece"

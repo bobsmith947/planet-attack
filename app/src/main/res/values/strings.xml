@@ -1,6 +1,8 @@
 <resources>
 	<string name="app_name">Planet Attack</string>
 	<string name="game_speed">Game Speed</string>
+	<string name="game_size">Game Size</string>
+	<string name="swipe_sensitivity">Swipe Sensitivity</string>
 	<string name="show_next_piece">Show Next Piece</string>
 	<string name="show_hold_piece">Show Hold Piece</string>
 	<string name="reset_data">Reset Data</string>
