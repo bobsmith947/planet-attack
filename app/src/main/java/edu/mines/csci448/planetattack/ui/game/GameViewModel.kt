@@ -33,6 +33,9 @@ class GameViewModel(
 	// region Game Play Properties
 	val pieceMover = object : Runnable {
 		override fun run() {
+			if (isPaused) {
+				return
+			}
 			movePiece()
 			try {
 				onPiecesChanged()
@@ -49,7 +52,7 @@ class GameViewModel(
 	// endregion
 
 	// region Game Play State Properties
-	private var isPaused = false
+	var isPaused = false
 	private var gameHasEnded = false
 
 	private var currentScore = score

@@ -47,15 +47,6 @@ class GameFragment : Fragment(),
 	private var showHold = false
 	// endregion
 
-	// region Game Play Properties
-
-	// endregion
-
-	// region Game Play State Properties
-	private var isPaused = false
-
-	// endregion
-
 	companion object {
 		private const val PIECES_KEY = "pieces"
 		private const val NEXT_KEY = "nextQueue"
@@ -159,7 +150,7 @@ class GameFragment : Fragment(),
 		binding.gameView.holder.addCallback(this)
 		val detector = GestureDetectorCompat(requireContext(), this)
 		binding.gameView.setOnTouchListener { _, event ->
-			if (!isPaused) {
+			if (!viewModel.isPaused) {
 				detector.onTouchEvent(event)
 			} else true
 		}
@@ -211,7 +202,7 @@ class GameFragment : Fragment(),
 
 	// region UI methods
 	private fun pause() {
-		isPaused = true
+		viewModel.isPaused = true
 		binding.menuOverlay.visibility = View.VISIBLE
 		binding.menuButton.apply {
 			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_background)
@@ -225,7 +216,7 @@ class GameFragment : Fragment(),
 	}
 
 	private fun resume() {
-		isPaused = false
+		viewModel.isPaused = false
 		binding.menuOverlay.visibility = View.INVISIBLE
 		binding.menuButton.apply {
 			alpha = ResourcesCompat.getFloat(resources, R.dimen.alpha_foreground)
@@ -287,7 +278,7 @@ class GameFragment : Fragment(),
 
 			viewModel.calculateRings()
 			// when not restoring from saved instance state
-			if (!isPaused) {
+			if (!viewModel.isPaused) {
 				viewModel.makeNextQueue()
 				viewModel.addNextPiece()
 			}
