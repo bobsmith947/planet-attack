@@ -4,10 +4,10 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.GestureDetectorCompat
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import edu.mines.csci448.planetattack.BackPressListener
@@ -18,7 +18,6 @@ import edu.mines.csci448.planetattack.data.Highscore
 import edu.mines.csci448.planetattack.data.repo.HighscoreRepository
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.*
-import kotlin.jvm.Throws
 import kotlin.reflect.full.createInstance
 
 class GameFragment : Fragment(),

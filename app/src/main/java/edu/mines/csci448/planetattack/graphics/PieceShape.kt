@@ -2,7 +2,6 @@ package edu.mines.csci448.planetattack.graphics
 
 import androidx.annotation.DrawableRes
 import edu.mines.csci448.planetattack.R
-import kotlin.jvm.Throws
 
 /**
  * This class represents the shape of a piece.

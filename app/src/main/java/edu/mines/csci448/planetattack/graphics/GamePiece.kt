@@ -8,7 +8,9 @@ import com.google.common.collect.BiMap
 import com.google.common.collect.HashBiMap
 import edu.mines.csci448.planetattack.ShapeParceler
 import edu.mines.csci448.planetattack.ShapeParceler.write
-import kotlinx.parcelize.*
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parceler
+import kotlinx.parcelize.Parcelize
 
 /**
  * This class contains the necessary information for the game to draw a piece.

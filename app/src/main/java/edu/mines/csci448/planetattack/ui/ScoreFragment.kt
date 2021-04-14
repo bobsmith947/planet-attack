@@ -1,18 +1,15 @@
 package edu.mines.csci448.planetattack.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import edu.mines.csci448.planetattack.R
+import androidx.recyclerview.widget.LinearLayoutManager
 import edu.mines.csci448.planetattack.data.Highscore
 import edu.mines.csci448.planetattack.databinding.FragmentScoreListBinding
-import edu.mines.csci448.planetattack.ui.dummy.DummyContent
 
 /**
  * A fragment representing a list of Items.

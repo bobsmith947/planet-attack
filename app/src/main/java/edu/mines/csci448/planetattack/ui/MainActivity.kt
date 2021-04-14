@@ -1,7 +1,7 @@
 package edu.mines.csci448.planetattack.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -9,7 +9,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import edu.mines.csci448.planetattack.BackPressListener
-import edu.mines.csci448.planetattack.R
 import edu.mines.csci448.planetattack.databinding.MainActivityBinding
 
 class MainActivity : AppCompatActivity() {
