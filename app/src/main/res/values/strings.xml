@@ -27,4 +27,5 @@
 	</string>
 	<string name="help_okay">Okay</string>
 	<string name="game_over_label">Game Over!</string>
+	<string name="clear_history_key">clear_history_key</string>
 </resources>

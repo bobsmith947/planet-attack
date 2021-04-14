@@ -30,6 +30,12 @@ class HighscoreRepository private constructor(private val highScoreDao: HighScor
 	fun getHighscores(): LiveData<List<Highscore>> = highScoreDao.getHighScores()
 	fun getHighscore(id: UUID): LiveData<Highscore?> = highScoreDao.getHighScore(id)
 
+	fun deleteHighScores() {
+		executor.execute {
+			highScoreDao.deleteHighscores()
+		}
+	}
+
 	fun addHighscore(highscore: Highscore) {
 		executor.execute {
 			highScoreDao.addHighScore(highscore)

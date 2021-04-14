@@ -19,7 +19,7 @@
 		app:defaultValue="false" />
 
 	<Preference
-		app:key="reset"
+		app:key="@string/clear_history_key"
 		app:title="@string/reset_data"
 		app:summary="@string/reset_data_summary" />
 </PreferenceScreen>
