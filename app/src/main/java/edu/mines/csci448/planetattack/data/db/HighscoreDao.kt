@@ -8,7 +8,7 @@ import edu.mines.csci448.planetattack.data.Highscore
 import java.util.*
 
 @Dao
-interface HighScoreDao {
+interface HighscoreDao {
 	@Query("SELECT * FROM highscore ORDER BY score DESC LIMIT 25")
 	fun getHighScores(): LiveData<List<Highscore>>
 

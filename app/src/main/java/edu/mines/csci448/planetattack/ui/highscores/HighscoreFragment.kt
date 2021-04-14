@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack.ui
+package edu.mines.csci448.planetattack.ui.highscores
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,10 +14,10 @@ import edu.mines.csci448.planetattack.databinding.FragmentScoreListBinding
 /**
  * A fragment representing a list of Items.
  */
-class ScoreFragment : Fragment() {
+class HighscoreFragment : Fragment() {
 
 	private lateinit var highscoreListViewModel: HighscoreListViewModel
-	private lateinit var adapter: ScoreAdapter
+	private lateinit var adapter: HighscoreAdapter
 
 	private var _binding: FragmentScoreListBinding? = null
 	val binding get() = _binding!!
@@ -26,7 +26,7 @@ class ScoreFragment : Fragment() {
 		super.onCreate(savedInstanceState)
 
 		val factory = HighscoreListViewModelFactory(requireContext())
-		highscoreListViewModel = ViewModelProvider(this@ScoreFragment, factory)
+		highscoreListViewModel = ViewModelProvider(this@HighscoreFragment, factory)
 			.get(HighscoreListViewModel::class.java)
 	}
 
@@ -57,7 +57,7 @@ class ScoreFragment : Fragment() {
 	}
 
 	private fun updateUI(highscores: List<Highscore>) {
-		adapter = ScoreAdapter(highscores)
+		adapter = HighscoreAdapter(highscores)
 		binding.list.adapter = adapter
 	}
 }

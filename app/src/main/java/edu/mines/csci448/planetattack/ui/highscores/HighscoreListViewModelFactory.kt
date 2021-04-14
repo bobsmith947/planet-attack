@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack.ui
+package edu.mines.csci448.planetattack.ui.highscores
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

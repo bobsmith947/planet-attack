@@ -3,12 +3,12 @@ package edu.mines.csci448.planetattack.data.repo
 import android.content.Context
 import androidx.lifecycle.LiveData
 import edu.mines.csci448.planetattack.data.Highscore
-import edu.mines.csci448.planetattack.data.db.HighScoreDao
+import edu.mines.csci448.planetattack.data.db.HighscoreDao
 import edu.mines.csci448.planetattack.data.db.HighscoreDatabase
 import java.util.*
 import java.util.concurrent.Executors
 
-class HighscoreRepository private constructor(private val highScoreDao: HighScoreDao) {
+class HighscoreRepository private constructor(private val highscoreDao: HighscoreDao) {
 	companion object {
 		private var INSTANCE: HighscoreRepository? = null
 
@@ -27,18 +27,18 @@ class HighscoreRepository private constructor(private val highScoreDao: HighScor
 
 	private val executor = Executors.newSingleThreadExecutor()
 
-	fun getHighscores(): LiveData<List<Highscore>> = highScoreDao.getHighScores()
-	fun getHighscore(id: UUID): LiveData<Highscore?> = highScoreDao.getHighScore(id)
+	fun getHighscores(): LiveData<List<Highscore>> = highscoreDao.getHighScores()
+	fun getHighscore(id: UUID): LiveData<Highscore?> = highscoreDao.getHighScore(id)
 
 	fun deleteHighScores() {
 		executor.execute {
-			highScoreDao.deleteHighscores()
+			highscoreDao.deleteHighscores()
 		}
 	}
 
 	fun addHighscore(highscore: Highscore) {
 		executor.execute {
-			highScoreDao.addHighScore(highscore)
+			highscoreDao.addHighScore(highscore)
 		}
 	}
 }

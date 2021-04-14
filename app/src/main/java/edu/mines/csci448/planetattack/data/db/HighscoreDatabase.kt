@@ -28,5 +28,5 @@ abstract class HighscoreDatabase : RoomDatabase() {
 		}
 	}
 
-	abstract val highscoreDao: HighScoreDao
+	abstract val highscoreDao: HighscoreDao
 }

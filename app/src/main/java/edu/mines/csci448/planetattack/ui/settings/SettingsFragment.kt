@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack.ui
+package edu.mines.csci448.planetattack.ui.settings
 
 import android.os.Bundle
 import androidx.preference.Preference

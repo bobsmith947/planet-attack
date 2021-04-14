@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack.ui
+package edu.mines.csci448.planetattack.ui.game
 
 import android.annotation.SuppressLint
 import android.graphics.Color

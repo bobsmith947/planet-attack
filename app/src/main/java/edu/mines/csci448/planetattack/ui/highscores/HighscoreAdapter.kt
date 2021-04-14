@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack.ui
+package edu.mines.csci448.planetattack.ui.highscores
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import edu.mines.csci448.planetattack.databinding.FragmentScoreBinding
  * [RecyclerView.Adapter] that can display a [DummyItem].
  * TODO: Replace the implementation with code for your data type.
  */
-class ScoreAdapter(private val highscores: List<Highscore>) : RecyclerView.Adapter<ScoreAdapter.ViewHolder>() {
+class HighscoreAdapter(private val highscores: List<Highscore>) : RecyclerView.Adapter<HighscoreAdapter.ViewHolder>() {
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 		val binding = FragmentScoreBinding.inflate(LayoutInflater.from(parent.context), parent, false)
