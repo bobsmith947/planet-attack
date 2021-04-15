@@ -4,7 +4,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	tools:context=".ui.game.GameFragment">
+	tools:context=".ui.GameFragment">
 
 	<Button
 		android:id="@+id/menu_button"
@@ -14,7 +14,7 @@
 		android:layout_marginTop="8dp"
 		android:layout_marginBottom="8dp"
 		android:backgroundTint="@color/block_magenta"
-		android:text="@string/in_game_menu"
+		android:text="@string/pause_label"
 		android:textAppearance="@style/TextAppearance.AppCompat.Large"
 		android:textColor="@color/white"
 		app:layout_constraintBottom_toTopOf="@+id/game_view"

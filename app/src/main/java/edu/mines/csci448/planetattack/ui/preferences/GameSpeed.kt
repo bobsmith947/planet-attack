@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack
+package edu.mines.csci448.planetattack.ui.preferences
 
 enum class GameSpeed(val dropDelayMillis: Long) {
 	SLOW(1500),

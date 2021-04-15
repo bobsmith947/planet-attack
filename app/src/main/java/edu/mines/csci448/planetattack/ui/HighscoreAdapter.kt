@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack.ui.highscores
+package edu.mines.csci448.planetattack.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

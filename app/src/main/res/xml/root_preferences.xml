@@ -1,7 +1,7 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:android="http://schemas.android.com/apk/res/android">
 	<ListPreference
-		app:key="speed"
+		app:key="@string/speed_key"
 		app:title="@string/game_speed"
 		app:entries="@array/speed_choices"
 		app:entryValues="@array/speed_values"
@@ -9,33 +9,32 @@
 		app:useSimpleSummaryProvider="true" />
 
 	<ListPreference
-		app:key="size"
+		app:key="@string/size_key"
 		app:title="@string/game_size"
 		app:entries="@array/size_choices"
 		app:entryValues="@array/size_values"
 		app:defaultValue="2"
 		app:useSimpleSummaryProvider="true" />
 
-	<ListPreference
-		app:key="swipe_sensitivity"
+	<SeekBarPreference
+		app:key="@string/sensitivity_key"
 		app:title="@string/swipe_sensitivity"
-		app:entries="@array/swipe_sensitivity_choices"
-		app:entryValues="@array/swipe_sensitivity_values"
-		app:defaultValue="4"
-		app:useSimpleSummaryProvider="true" />
+		android:min="1"
+		android:max="7"
+		app:defaultValue="4" />
 
 	<SwitchPreference
-		app:key="next"
+		app:key="@string/next_key"
 		app:title="@string/show_next_piece"
 		app:defaultValue="true" />
 
 	<SwitchPreference
-		app:key="hold"
+		app:key="@string/hold_key"
 		app:title="@string/show_hold_piece"
 		app:defaultValue="false" />
 
 	<Preference
-		app:key="@string/clear_history_key"
+		app:key="@string/reset_key"
 		app:title="@string/reset_data"
 		app:summary="@string/reset_data_summary" />
 </PreferenceScreen>

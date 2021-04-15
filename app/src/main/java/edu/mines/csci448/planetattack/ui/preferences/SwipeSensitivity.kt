@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack
+package edu.mines.csci448.planetattack.ui.preferences
 
 enum class SwipeSensitivity(val multiplier: Double) {
 	ULTRA_LOW(0.125),

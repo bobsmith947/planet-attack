@@ -1,4 +1,4 @@
-package edu.mines.csci448.planetattack.ui.highscores
+package edu.mines.csci448.planetattack.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,10 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import edu.mines.csci448.planetattack.data.Highscore
 import edu.mines.csci448.planetattack.databinding.FragmentScoreListBinding
+import edu.mines.csci448.planetattack.ui.viewmodel.GameViewModel
+import edu.mines.csci448.planetattack.ui.viewmodel.GameViewModelFactory
 
 class HighscoreFragment : Fragment() {
-
-	private lateinit var highscoreListViewModel: HighscoreListViewModel
+	private lateinit var gameViewModel: GameViewModel
 	private lateinit var adapter: HighscoreAdapter
 
 	private var _binding: FragmentScoreListBinding? = null
@@ -21,9 +22,9 @@ class HighscoreFragment : Fragment() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		val factory = HighscoreListViewModelFactory(requireContext())
-		highscoreListViewModel = ViewModelProvider(this@HighscoreFragment, factory)
-			.get(HighscoreListViewModel::class.java)
+		val factory = GameViewModelFactory(requireContext())
+		gameViewModel = ViewModelProvider(this, factory)
+			.get(GameViewModel::class.java)
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -37,7 +38,7 @@ class HighscoreFragment : Fragment() {
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
-		highscoreListViewModel.highscoreListLiveData.observe(
+		gameViewModel.highscoreListLiveData.observe(
 			viewLifecycleOwner, { highscores ->
 				highscores?.let {
 					updateUI(highscores)

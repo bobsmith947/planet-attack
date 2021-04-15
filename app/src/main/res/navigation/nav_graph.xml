@@ -24,16 +24,16 @@
 
 	<fragment
 		android:id="@+id/settingsFragment"
-		android:name="edu.mines.csci448.planetattack.ui.settings.SettingsFragment"
+		android:name="edu.mines.csci448.planetattack.ui.SettingsFragment"
 		android:label="@string/settings_label" />
 	<fragment
 		android:id="@+id/gameFragment"
-		android:name="edu.mines.csci448.planetattack.ui.game.GameFragment"
+		android:name="edu.mines.csci448.planetattack.ui.GameFragment"
 		android:label="@string/app_name"
 		tools:layout="@layout/fragment_game" />
 	<fragment
 		android:id="@+id/scoreFragment"
-		android:name="edu.mines.csci448.planetattack.ui.highscores.HighscoreFragment"
+		android:name="edu.mines.csci448.planetattack.ui.HighscoreFragment"
 		android:label="@string/scores_label"
 		tools:layout="@layout/fragment_score_list" />
 </navigation>

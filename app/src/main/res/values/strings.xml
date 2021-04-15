@@ -12,7 +12,7 @@
 	<string name="scores_label">High Scores</string>
 	<string name="help_label">How to Play</string>
 	<string name="settings_label">Settings</string>
-	<string name="in_game_menu">Pause</string>
+	<string name="pause_label">Pause</string>
 	<string name="next_block">Next: </string>
 	<string name="hold_block">Hold</string>
 	<string name="game_score">Score: </string>
@@ -30,5 +30,10 @@
 	</string>
 	<string name="help_okay">Okay</string>
 	<string name="game_over_label">Game Over!</string>
-	<string name="clear_history_key">clear_history_key</string>
+	<string name="reset_key">reset</string>
+	<string name="speed_key">speed</string>
+	<string name="size_key">size</string>
+	<string name="sensitivity_key">sensitivity</string>
+	<string name="next_key">next</string>
+	<string name="hold_key">hold</string>
 </resources>
