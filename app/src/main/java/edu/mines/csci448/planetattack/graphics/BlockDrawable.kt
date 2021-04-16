@@ -2,6 +2,7 @@ package edu.mines.csci448.planetattack.graphics
 
 import android.content.res.Resources
 import android.graphics.drawable.BitmapDrawable
+import com.google.common.collect.BiMap
 import edu.mines.csci448.planetattack.graphics.GamePiece.Companion.blockSize
 
 /**
@@ -34,6 +35,15 @@ class BlockDrawable(color: BlockColor, resources: Resources, val piece: GamePiec
 		super.setBounds(x, y, x + blockSize, y + blockSize)
 		this.x = x
 		this.y = y
+	}
+
+	/**
+	 * Updates the value of this block in the given mapping.
+	 * This overwrites any block that may have previously had the same value.
+	 * @receiver A bi-directional mapping between blocks and coordinates.
+	 */
+	fun BiMap<BlockDrawable, Pair<Int, Int>>.updateBlock() {
+		forcePut(this@BlockDrawable, x to y)
 	}
 
 	operator fun component1(): Int {

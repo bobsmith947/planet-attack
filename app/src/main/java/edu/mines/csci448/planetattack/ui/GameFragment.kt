@@ -18,6 +18,7 @@ import edu.mines.csci448.planetattack.data.Highscore
 import edu.mines.csci448.planetattack.databinding.FragmentGameBinding
 import edu.mines.csci448.planetattack.graphics.*
 import edu.mines.csci448.planetattack.graphics.GamePiece.Companion.blockSize
+import edu.mines.csci448.planetattack.graphics.GamePiece.Companion.occupiedSpaces
 import edu.mines.csci448.planetattack.ui.preferences.GameSize
 import edu.mines.csci448.planetattack.ui.preferences.GameSpeed
 import edu.mines.csci448.planetattack.ui.preferences.SwipeSensitivity
@@ -165,7 +166,7 @@ class GameFragment : Fragment(),
 
 	override fun onDestroy() {
 		super.onDestroy()
-		GamePiece.occupiedSpaces.clear()
+		occupiedSpaces.clear()
 	}
 
 	override fun onBackPressed() {
@@ -211,10 +212,12 @@ class GameFragment : Fragment(),
 	}
 
 	private fun gameOver() {
-		pause()
-		binding.resumeButton.visibility = View.GONE
-		binding.gameOverTextView.visibility = View.VISIBLE
-		gameViewModel.addHighscore(Highscore(score=currentScore))
+		if (!isPaused) {
+			pause()
+			binding.resumeButton.visibility = View.GONE
+			binding.gameOverTextView.visibility = View.VISIBLE
+			gameViewModel.addHighscore(Highscore(score = currentScore))
+		}
 	}
 
 	private fun setButtonOnClickListeners() {
@@ -260,7 +263,7 @@ class GameFragment : Fragment(),
 			val x = (canvasWidth / 2) - (blockSize / 2)
 			val y = (canvasHeight / 2) - (blockSize / 2)
 			planetBlock.setBounds(x, y)
-			GamePiece.occupiedSpaces[planetBlock] = x to y
+			occupiedSpaces[planetBlock] = x to y
 
 			calculateRings()
 			// when not restoring from saved instance state
@@ -381,7 +384,8 @@ class GameFragment : Fragment(),
 	private fun movePiece() {
 		val piece = pieces.last()
 		if (!piece.direction.drop(piece)) {
-			if (checkOutsideBounds()) {
+			// check if the piece was placed out of bounds
+			if (pieces.last().blocks.filterNotNull().any { !boundsRect.contains(it.x, it.y) }) {
 				gameOver()
 				return
 			}
@@ -397,7 +401,7 @@ class GameFragment : Fragment(),
 	private fun swapHoldPiece() {
 		val hold = holdPiece
 		holdPiece = pieces.removeLast()
-		holdPiece!!.blocks.forEach { GamePiece.occupiedSpaces.remove(it) }
+		holdPiece!!.blocks.forEach { occupiedSpaces.remove(it) }
 		resetPiecePosition(holdPiece!!)
 		if (hold != null) pieces.addLast(hold)
 		else addNextPiece()
@@ -446,16 +450,20 @@ class GameFragment : Fragment(),
 	}
 
 	private fun clearRings() {
-		rings.forEachIndexed { index, ring ->
-			if (GamePiece.occupiedSpaces.values.containsAll(ring)) {
+		var index = 0
+		while (index < rings.size) {
+			val ring = rings[index]
+			// check if ring is completed
+			if (occupiedSpaces.values.containsAll(ring)) {
 				// determine ring bounds
 				val (xmin, xmax, ymin, ymax) = with(ring) { arrayOf(
 					minOf { it.first }, maxOf { it.first },
 					minOf { it.second }, maxOf { it.second }
 				) }
+				// remove blocks in ring
 				ring.forEach {
-					val block = GamePiece.occupiedSpaces.inverse()[it]
-					GamePiece.occupiedSpaces.remove(block)
+					val block = occupiedSpaces.inverse()[it]
+					occupiedSpaces.remove(block)
 					val blocks = block!!.piece!!.blocks
 					blocks[blocks.indexOf(block)] = null
 				}
@@ -464,20 +472,23 @@ class GameFragment : Fragment(),
 				pieces.removeIf { it.blocks.filterNotNull().isEmpty() }
 				// fill in cleared spaces
 				pieces.forEach { piece ->
-					piece.blocks.filterNotNull().forEach {
-						if (it.x < xmin) it.moveRight()
-						else if (it.x > xmax) it.moveLeft()
-						if (it.y < ymin) it.moveDown()
-						else if (it.y > ymax) it.moveUp()
-						// update piece coordinates
-						val (x, y) = piece.blocks.filterNotNull()[0]; piece.x = x; piece.y = y
+					piece.blocks.forEach {
+						it?.run {
+							if (x < xmin) moveRight()
+							else if (x > xmax) moveLeft()
+							if (y < ymin) moveDown()
+							else if (y > ymax) moveUp()
+							occupiedSpaces.updateBlock()
+						}
 					}
+					// update piece coordinates
+					val (x, y) = piece.blocks.filterNotNull()[0]
+					piece.x = x
+					piece.y = y
 				}
-			}
+			} else index++ // clear the same ring multiple times if necessary
 		}
 	}
-
-	private fun checkOutsideBounds() = pieces.last().blocks.filterNotNull().any { !boundsRect.contains(it.x, it.y) }
 	// endregion
 
 	// region GestureDetector Callbacks

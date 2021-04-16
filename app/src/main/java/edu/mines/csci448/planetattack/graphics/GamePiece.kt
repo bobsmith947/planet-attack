@@ -84,9 +84,9 @@ class GamePiece(var x: Int, var y: Int, val shape: PieceShape, var direction: Pi
 	 */
 	fun drawBlocks(canvas: Canvas) {
 		blocks.forEach {
-			if (it != null) {
-				it.draw(canvas)
-				occupiedSpaces.forcePut(it, it.x to it.y)
+			it?.run {
+				draw(canvas)
+				occupiedSpaces.updateBlock()
 			}
 		}
 	}
