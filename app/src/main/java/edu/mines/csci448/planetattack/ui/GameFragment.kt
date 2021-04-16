@@ -260,10 +260,11 @@ class GameFragment : Fragment(),
 
 			// add "planet" to center
 			planetBlock = BlockDrawable(BlockColor.GRAY, resources, null)
-			val x = (canvasWidth / 2) - (blockSize / 2)
-			val y = (canvasHeight / 2) - (blockSize / 2)
-			planetBlock.setBounds(x, y)
-			occupiedSpaces[planetBlock] = x to y
+			with (planetBlock) {
+				setBounds((canvasWidth / 2) - (blockSize / 2),
+					(canvasHeight / 2) - (blockSize / 2))
+				occupiedSpaces.updateBlock()
+			}
 
 			calculateRings()
 			// when not restoring from saved instance state
