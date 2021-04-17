@@ -27,12 +27,11 @@ class HighscoreRepository private constructor(private val highscoreDao: Highscor
 	private val executor = Executors.newSingleThreadExecutor()
 
 	fun getHighscores() = highscoreDao.getHighScores()
-	fun getHighscore(id: UUID) = highscoreDao.getHighScore(id)
 	fun getTopScore() = highscoreDao.getTopScore()
 
 	fun deleteHighScores() {
 		executor.execute {
-			highscoreDao.deleteHighscores()
+			highscoreDao.deleteHighScores()
 		}
 	}
 
