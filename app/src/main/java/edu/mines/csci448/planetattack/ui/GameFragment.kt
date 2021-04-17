@@ -54,9 +54,9 @@ class GameFragment : Fragment(),
 
 	private val pieceMover = object : Runnable {
 		override fun run() {
+			binding.gameView.postDelayed(this, speed.dropDelayMillis)
 			movePiece()
 			drawPieces()
-			binding.gameView.postDelayed(this, speed.dropDelayMillis)
 		}
 	}
 
@@ -212,12 +212,10 @@ class GameFragment : Fragment(),
 	}
 
 	private fun gameOver() {
-		if (!isPaused) {
-			pause()
-			binding.resumeButton.visibility = View.GONE
-			binding.gameOverTextView.visibility = View.VISIBLE
-			gameViewModel.addHighscore(Highscore(score = currentScore))
-		}
+		pause()
+		binding.resumeButton.visibility = View.GONE
+		binding.gameOverTextView.visibility = View.VISIBLE
+		gameViewModel.addHighscore(Highscore(score = currentScore))
 	}
 
 	private fun setButtonOnClickListeners() {
