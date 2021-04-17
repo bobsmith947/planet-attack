@@ -69,7 +69,11 @@ class GameFragment : Fragment(),
 		set(value) {
 			field = value
 			binding.scoreLabel.text = value.toString()
+			if (value > topScore) {
+				binding.highScoreLabel.text = getString(R.string.new_record)
+			}
 		}
+	private var topScore = 0
 
 	private val pieces = ArrayDeque<GamePiece>()
 	private val nextQueue = ArrayDeque<GamePiece>()
@@ -153,6 +157,7 @@ class GameFragment : Fragment(),
 		gameViewModel.topScoreLiveData.observe(
 			viewLifecycleOwner, { score ->
 				binding.highScoreLabel.text = score?.toString() ?: "None"
+				topScore = score ?: 0
 			}
 		)
 	}
