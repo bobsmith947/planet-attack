@@ -17,7 +17,7 @@ class HighscoreFragment : Fragment() {
 	private lateinit var adapter: HighscoreAdapter
 
 	private var _binding: FragmentScoreListBinding? = null
-	val binding get() = _binding!!
+	private val binding get() = _binding!!
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)

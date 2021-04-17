@@ -20,7 +20,7 @@ class HighscoreAdapter(private val highscores: List<Highscore>) : RecyclerView.A
 
 	override fun getItemCount() = highscores.size
 
-	inner class ViewHolder(val binding: FragmentScoreBinding) : RecyclerView.ViewHolder(binding.root) {
+	inner class ViewHolder(private val binding: FragmentScoreBinding) : RecyclerView.ViewHolder(binding.root) {
 
 		fun bind(highscore: Highscore, position: Int) {
 			val positionString = "#${position + 1}"

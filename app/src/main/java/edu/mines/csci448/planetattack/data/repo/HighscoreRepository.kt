@@ -4,7 +4,6 @@ import android.content.Context
 import edu.mines.csci448.planetattack.data.Highscore
 import edu.mines.csci448.planetattack.data.db.HighscoreDao
 import edu.mines.csci448.planetattack.data.db.HighscoreDatabase
-import java.util.*
 import java.util.concurrent.Executors
 
 class HighscoreRepository private constructor(private val highscoreDao: HighscoreDao) {

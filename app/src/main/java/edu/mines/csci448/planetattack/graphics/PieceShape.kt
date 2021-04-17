@@ -1,3 +1,5 @@
+@file:Suppress("unused", "unused", "unused", "unused", "unused", "unused", "unused")
+
 package edu.mines.csci448.planetattack.graphics
 
 import androidx.annotation.DrawableRes
