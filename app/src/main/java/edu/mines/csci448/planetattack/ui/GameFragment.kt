@@ -31,6 +31,8 @@ class GameFragment : Fragment(),
 	BackPressListener, SurfaceHolder.Callback, GestureDetector.OnGestureListener {
 	private lateinit var gameViewModel: GameViewModel
 
+	private lateinit var soundManager: SoundManager
+
 	// region UI Properties
 	private var _binding: FragmentGameBinding? = null
 	private val binding get() = _binding!!
@@ -455,11 +457,14 @@ class GameFragment : Fragment(),
 
 	private fun clearRings() {
 		var index = 0
+		var ringWasCompleted = false
+
 		while (index < rings.size) {
 			val ring = rings[index]
 			// check if ring is completed
 			if (occupiedSpaces.values.containsAll(ring)) {
 				// determine ring bounds
+				ringWasCompleted = true
 				val (xmin, xmax, ymin, ymax) = with(ring) { arrayOf(
 					minOf { it.first }, maxOf { it.first },
 					minOf { it.second }, maxOf { it.second }
@@ -492,6 +497,11 @@ class GameFragment : Fragment(),
 				}
 			} else index++ // clear the same ring multiple times if necessary
 		}
+
+		SoundManager.shared.play(
+			if (ringWasCompleted) SoundManager.shared.ringDestroySound
+			else SoundManager.shared.blockPlaceSound
+		)
 	}
 	// endregion
 
