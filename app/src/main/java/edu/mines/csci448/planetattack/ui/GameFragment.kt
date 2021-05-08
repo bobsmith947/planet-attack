@@ -52,10 +52,16 @@ class GameFragment : Fragment(),
 
 	private var showNext = true
 	private var showHold = false
+
+	private var isStart = true
 	// endregion
 
 	private val pieceMover = object : Runnable {
 		override fun run() {
+			if (isStart) {
+				SoundManager.shared.play(SoundManager.shared.startGameSound)
+				isStart = false
+			}
 			binding.gameView.postDelayed(this, speed.dropDelayMillis)
 			movePiece()
 			drawPieces()
@@ -219,6 +225,7 @@ class GameFragment : Fragment(),
 	}
 
 	private fun gameOver() {
+		SoundManager.shared.play(SoundManager.shared.gameOverSound)
 		pause()
 		binding.resumeButton.visibility = View.GONE
 		binding.gameOverTextView.visibility = View.VISIBLE

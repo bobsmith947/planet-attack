@@ -26,6 +26,8 @@ class SoundManager(private val assets: AssetManager) {
 
 	val blockPlaceSound get() = sounds.firstOrNull { it.name == "block_place" }
 	val ringDestroySound get() = sounds.firstOrNull { it.name == "ring_destroy" }
+	val gameOverSound get() = sounds.firstOrNull { it.name == "game_over" }
+	val startGameSound get() = sounds.firstOrNull { it.name == "start_game" }
 
 	init {
 		sounds = loadSounds()
