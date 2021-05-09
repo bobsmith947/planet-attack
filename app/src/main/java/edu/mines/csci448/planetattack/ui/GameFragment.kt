@@ -52,16 +52,10 @@ class GameFragment : Fragment(),
 
 	private var showNext = true
 	private var showHold = false
-
-	private var isStart = true
 	// endregion
 
 	private val pieceMover = object : Runnable {
 		override fun run() {
-			if (isStart) {
-				SoundManager.shared.play(SoundManager.shared.startGameSound)
-				isStart = false
-			}
 			binding.gameView.postDelayed(this, speed.dropDelayMillis)
 			movePiece()
 			drawPieces()
@@ -284,6 +278,8 @@ class GameFragment : Fragment(),
 				nextQueue.addAll(generateSequence(this::generatePiece).take(3))
 				addNextPiece()
 			}
+
+			SoundManager.shared.play(SoundManager.shared.startGameSound)
 		}
 	}
 
