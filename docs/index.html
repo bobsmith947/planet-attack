@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<title>Planet Attack</title>
+		<meta charset="utf-8">
+		<meta name="description" content="Promotional webpage for the Planet Attack app.">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+		<link rel="manifest" href="site.webmanifest">
+		<link rel="stylesheet" type="text/css" href="index.css">
+		<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<div id="links">
+			<button class="link">Video</button>
+			<button class="link">Gameplay</button>
+			<button class="link">Controls</button>
+		</div>
+		<div id="container">
+			<div class="content">
+				<video width="480" height="480" controls>
+					Video Placeholder
+				</video>
+			</div>
+			<div class="content">
+				<p>Planet Attack is a Tetris-like puzzle where the blocks fall towards the center of the screen, and you need to from a complete ring in order to clear blocks. All of the classic Tetris pieces are available to build with, and the next 3 upcoming pieces are shown to help you better strategize your placement. You can also choose to save a piece for later placement with the hold feature.</p>
+			</div>
+			<div class="content">
+				<p>The controls are very easy to use:</p>
+				<ul>
+					<li>Pieces can be moved left-right or up-down (depending on the direction it falls in) by dragging.</li>
+					<li>
+						Pieces can be rotated by tapping.
+						<ul>
+							<li>Pieces will rotate to the right if possible.</li>
+							<li>If rotating a piece will cause it to overlap with an existing piece, it will attempt to move to an adjacent empty spot.</li>
+							<li>Otherwise the roation will fail.</li>
+						</ul>
+					</li>
+					<li>Pieces can be automatically dropped by pressing and holding.</li>
+				</ul>
+			</div>
+		</div>
+		<script>
+		$(".link").click(function () {
+			$(".content").css("display", "none");
+			$(".link").removeClass("active");
+			var index = $(this).index();
+			$("#container").children()[index].style.display = "block";
+			$(this).addClass("active");
+		});
+		$(".link")[0].click();
+		</script>
+	</body>
+</html>
