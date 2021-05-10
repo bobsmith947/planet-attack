@@ -24,19 +24,9 @@ class MainActivity : AppCompatActivity() {
 		NavigationUI.setupActionBarWithNavController(this, navHost.navController)
 	}
 
-	override fun onSupportNavigateUp() = findNavController(binding.navHostFragment.id).navigateUp()
+	override fun onSupportNavigateUp(): Boolean {
+		return findNavController(binding.navHostFragment.id).navigateUp()
 						|| super.onSupportNavigateUp()
-
-	// https://stackoverflow.com/a/64828028
-	override fun onWindowFocusChanged(hasFocus: Boolean) {
-		super.onWindowFocusChanged(hasFocus)
-		if (hasFocus) {
-			WindowCompat.setDecorFitsSystemWindows(window, false)
-			WindowInsetsControllerCompat(window, binding.root).let { controller ->
-				controller.hide(WindowInsetsCompat.Type.systemBars())
-				controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-			}
-		}
 	}
 
 	override fun onBackPressed() {
