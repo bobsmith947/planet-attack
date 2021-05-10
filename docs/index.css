@@ -44,7 +44,7 @@ video {
 	background-color: #ddd;
 }
 
-/* Create an active/current tablink class */
+/* Create an active/current tab link class */
 .link.active {
 	background-color: #ccc;
 }
@@ -62,4 +62,15 @@ video {
 @keyframes fadeEffect {
 	from {opacity: 0;}
 	to {opacity: 1;}
+}
+
+@media (max-width: 1024px) {
+	body {
+		font-size: 1em;
+	}
+
+	#container {
+		width: 75%;
+		left: 12.5%;
+	}
 }
