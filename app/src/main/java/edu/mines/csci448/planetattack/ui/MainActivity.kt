@@ -15,10 +15,15 @@ class MainActivity : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		SoundManager.makeShared(assets)
+		SoundManager.shared = SoundManager(assets)
 		binding = MainActivityBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 		NavigationUI.setupActionBarWithNavController(this, navHost.navController)
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		SoundManager.shared.release()
 	}
 
 	override fun onSupportNavigateUp(): Boolean {

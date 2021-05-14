@@ -11,12 +11,7 @@ class SoundManager(private val assets: AssetManager) {
 		private const val SOUNDS_FOLDER = "sounds"
 		private const val MAX_SOUNDS = 5
 
-		private var _shared: SoundManager? = null
-		val shared get() = _shared!!
-
-		fun makeShared(assets: AssetManager) {
-			_shared = SoundManager(assets)
-		}
+		lateinit var shared: SoundManager
 	}
 
 	private val sounds: List<Sound>
@@ -59,7 +54,6 @@ class SoundManager(private val assets: AssetManager) {
 
 	fun play(sound: Sound?) {
 		sound?.soundID?.let {
-			Log.d(LOG_TAG, "Playing sound ${sound.name}")
 			soundPool.play(it, 1.0f, 1.0f, 1, 0, 1.0f)
 		}
 	}

@@ -31,8 +31,6 @@ class GameFragment : Fragment(),
 	BackPressListener, SurfaceHolder.Callback, GestureDetector.OnGestureListener {
 	private lateinit var gameViewModel: GameViewModel
 
-	private lateinit var soundManager: SoundManager
-
 	// region UI Properties
 	private var _binding: FragmentGameBinding? = null
 	private val binding get() = _binding!!
