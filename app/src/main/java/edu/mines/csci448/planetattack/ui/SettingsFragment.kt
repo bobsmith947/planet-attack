@@ -29,7 +29,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 			"1" -> GameSpeed.SLOW
 			"2" -> GameSpeed.MEDIUM
 			"3" -> GameSpeed.FAST
-			else -> throw IllegalStateException()
+			else -> GameSpeed.SLOW
 		}
 
 		fun getSizePreference(size: String?) = when (size) {
@@ -37,7 +37,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 			"2" -> GameSize.MEDIUM
 			"3" -> GameSize.LARGE
 			"4" -> GameSize.HUGE
-			else -> throw IllegalStateException()
+			else -> GameSize.MEDIUM
 		}
 
 		fun getSensitivityPreference(sensitivity: Int) = when (sensitivity) {
@@ -48,7 +48,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 			5 -> SwipeSensitivity.HIGH
 			6 -> SwipeSensitivity.VERY_HIGH
 			7 -> SwipeSensitivity.ULTRA_HIGH
-			else -> throw IllegalStateException()
+			else -> SwipeSensitivity.MEDIUM
 		}
 	}
 }
